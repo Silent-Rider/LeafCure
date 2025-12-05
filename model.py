@@ -47,10 +47,12 @@ def fit_and_save_model(model:Model, train_gen, val_gen, epochs:int, version:int,
     model.save(f"{folder}/{prefix}model_v{version}.keras")
     model.export(f"{folder}/{prefix}model_v{version}")
 
+
 def load_fitted_model(model_path:str):
     folder = MODELS_FOLDER
     model:Model = load_model(filepath=f"{folder}/{model_path}")
     return model
+
 
 def main():
     image_size = (224, 224)
