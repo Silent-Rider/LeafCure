@@ -1,9 +1,11 @@
-from keras.src.applications.mobilenet_v3 import preprocess_input
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
 
-def get_train_val_generators(target_size:tuple, validation_split:float, batch_size:int):
+def get_train_val_generators(target_size:tuple,
+                             preprocess_input_function,
+                             validation_split:float,
+                             batch_size:int):
     datagen = ImageDataGenerator(
-        preprocessing_function=preprocess_input,
+        preprocessing_function=preprocess_input_function,
         validation_split=validation_split
     )
 

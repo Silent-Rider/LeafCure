@@ -5,44 +5,47 @@ from tensorflow.keras.applications import MobileNetV3Large
 from keras.src.metrics.f_score_metrics import F1Score as F1Score
 
 from process.data_gen import get_train_val_generators
+from keras.src.applications.mobilenet_v3 import preprocess_input
 
-def created_mobile_net_v3_large(img_size:tuple):
-    mobile_net_model = MobileNetV3Large(
+def create_mobile_net_v3_large(img_size:tuple):
+    mobile_net = MobileNetV3Large(
         input_shape=(*img_size, 3),
         weights='imagenet',
         include_top=False
     )
-    mobile_net_model.trainable = False
-    return mobile_net_model
+    mobile_net.trainable = False
+    return mobile_net, preprocess_input
 
 
-def create_model(base_deep_model):
-    x = base_deep_model.output
+def compile_model(base_model):
+    x = base_model.output
     x = GlobalAveragePooling2D()(x)
     x = BatchNormalization()(x)
     x = Dense(128, activation='relu', kernel_regularizer=regularizers.l2(1e-3))(x)
     x = Dropout(0.5)(x)
     predictions = Dense(38, activation='softmax')(x)
 
-    target_model = Model(inputs=base_deep_model.input, outputs=predictions)
+    model = Model(inputs=base_model.input, outputs=predictions)
 
     f1_score = F1Score(average='macro')
-    target_model.compile(
+    model.compile(
         optimizer=Adam(learning_rate=0.001),
         loss='categorical_crossentropy',
         metrics=['accuracy', f1_score]
     )
-    return target_model
+    return model
 
 
-image_size = (224, 224)
-base_model = created_mobile_net_v3_large(image_size)
-model = create_model(base_model)
-train_gen, val_gen = get_train_val_generators(image_size, 0.15, 32)
-
-model.fit(train_gen, validation_data=val_gen, epochs=10)
-model.evaluate(val_gen)
-model.save('models/plant_disease_model_v1.keras')
-model.export('models/plant_disease_model_v1')
+def fit_and_save_model(model:Model, train_gen, val_gen, epochs:int):
+    model.fit(train_gen, validation_data=val_gen, epochs=epochs)
+    model.evaluate(val_gen)
+    model.save('models/plant_disease_model_v1.keras')
+    model.export('models/plant_disease_model_v1')
 
 
+def main():
+    image_size = (224, 224)
+    base_model, preprocess_input_function = create_mobile_net_v3_large(image_size)
+    model = compile_model(base_model)
+    train_gen, val_gen = get_train_val_generators(image_size, preprocess_input_function, 0.15, 32)
+    fit_and_save_model(model, train_gen, val_gen, epochs=10)
