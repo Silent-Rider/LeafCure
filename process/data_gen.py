@@ -1,6 +1,7 @@
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
 
-def get_train_val_generators(target_size:tuple,
+def get_train_val_generators(image_dir:str,
+                             target_size:tuple,
                              preprocess_input_function,
                              validation_split:float,
                              batch_size:int,
@@ -12,7 +13,7 @@ def get_train_val_generators(target_size:tuple,
     )
 
     train_generator = datagen.flow_from_directory(
-        'dataset',
+        image_dir,
         target_size=target_size,
         batch_size=batch_size,
         class_mode='categorical',
@@ -20,7 +21,7 @@ def get_train_val_generators(target_size:tuple,
     )
 
     val_generator = datagen.flow_from_directory(
-        'dataset',
+        image_dir,
         target_size=target_size,
         batch_size=batch_size,
         class_mode='categorical',
