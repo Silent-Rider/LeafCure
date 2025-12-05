@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="694a8710-0a6e-4ce1-b390-215fbbfe12f2" name="Changes" comment="Рефакторинг для воспроизводимости и настройки">
+    <list default="true" id="694a8710-0a6e-4ce1-b390-215fbbfe12f2" name="Changes" comment="еще рефактор">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant_disease_model_v1.keras" beforeDir="false" afterPath="$PROJECT_DIR$/models/model_v1.keras" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant_disease_model_v1/fingerprint.pb" beforeDir="false" afterPath="$PROJECT_DIR$/models/model_v1/fingerprint.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant_disease_model_v1/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/models/model_v1/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant_disease_model_v1/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/models/model_v1/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant_disease_model_v1/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/models/model_v1/variables/variables.index" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/process/data_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/process/data_gen.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +81,7 @@
       <option name="presentableId" value="Default" />
       <updated>1764817296816</updated>
       <workItem from="1764817297854" duration="20268000" />
-      <workItem from="1764914441684" duration="1936000" />
+      <workItem from="1764914441684" duration="2580000" />
     </task>
     <task id="LOCAL-00001" summary="Started making a model">
       <option name="closed" value="true" />
@@ -126,7 +123,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764916075268</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="еще рефактор">
+      <option name="closed" value="true" />
+      <created>1764916513750</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1764916513750</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -138,7 +143,8 @@
     <MESSAGE value="Добавил все в проект" />
     <MESSAGE value="Небольшие корректировки" />
     <MESSAGE value="Рефакторинг для воспроизводимости и настройки" />
-    <option name="LAST_COMMIT_MESSAGE" value="Рефакторинг для воспроизводимости и настройки" />
+    <MESSAGE value="еще рефактор" />
+    <option name="LAST_COMMIT_MESSAGE" value="еще рефактор" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LeafCure$model.coverage" NAME="model Coverage Results" MODIFIED="1764834445949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

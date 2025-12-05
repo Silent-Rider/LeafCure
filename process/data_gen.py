@@ -3,10 +3,12 @@ from keras.src.legacy.preprocessing.image import ImageDataGenerator
 def get_train_val_generators(target_size:tuple,
                              preprocess_input_function,
                              validation_split:float,
-                             batch_size:int):
+                             batch_size:int,
+                             seed:int=43):
     datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input_function,
-        validation_split=validation_split
+        validation_split=validation_split,
+        seed=seed
     )
 
     train_generator = datagen.flow_from_directory(

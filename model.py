@@ -17,13 +17,13 @@ def create_mobile_net_v3_large(img_size:tuple):
     return mobile_net, preprocess_input
 
 
-def compile_model(base_model):
+def compile_model(base_model, num_classes=38):
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     x = BatchNormalization()(x)
     x = Dense(128, activation='relu', kernel_regularizer=regularizers.l2(1e-3))(x)
     x = Dropout(0.5)(x)
-    predictions = Dense(38, activation='softmax')(x)
+    predictions = Dense(num_classes, activation='softmax')(x)
 
     model = Model(inputs=base_model.input, outputs=predictions)
 
@@ -44,10 +44,12 @@ def fit_and_save_model(model:Model, train_gen, val_gen, epochs:int, version:int,
     model.save(f"{folder}/{prefix}model_v{version}.keras")
     model.export(f"{folder}/{prefix}model_v{version}")
 
+def load_model(model_path:str):
+    pass
 
 def main():
     image_size = (224, 224)
     base_model, preprocess_input_function = create_mobile_net_v3_large(image_size)
     model = compile_model(base_model)
-    train_gen, val_gen = get_train_val_generators(image_size, preprocess_input_function, 0.15, 32)
+    train_gen, val_gen = get_train_val_generators(image_size, preprocess_input_function, 0.15, 32, 43)
     fit_and_save_model(model, train_gen, val_gen, epochs=10, version=1)
