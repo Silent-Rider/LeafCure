@@ -36,11 +36,13 @@ def compile_model(base_model):
     return model
 
 
-def fit_and_save_model(model:Model, train_gen, val_gen, epochs:int):
+def fit_and_save_model(model:Model, train_gen, val_gen, epochs:int, version:int, prefix:str=""):
+    if prefix: prefix += '_'
     model.fit(train_gen, validation_data=val_gen, epochs=epochs)
     model.evaluate(val_gen)
-    model.save('models/plant_disease_model_v1.keras')
-    model.export('models/plant_disease_model_v1')
+    folder = 'models'
+    model.save(f"{folder}/{prefix}model_v{version}.keras")
+    model.export(f"{folder}/{prefix}model_v{version}")
 
 
 def main():
@@ -48,4 +50,4 @@ def main():
     base_model, preprocess_input_function = create_mobile_net_v3_large(image_size)
     model = compile_model(base_model)
     train_gen, val_gen = get_train_val_generators(image_size, preprocess_input_function, 0.15, 32)
-    fit_and_save_model(model, train_gen, val_gen, epochs=10)
+    fit_and_save_model(model, train_gen, val_gen, epochs=10, version=1)
