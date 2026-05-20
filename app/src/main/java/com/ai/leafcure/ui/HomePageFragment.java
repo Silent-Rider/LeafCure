@@ -37,13 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class HomePageFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private final List<String> plantList = Arrays.asList(
-            "Яблоко",
-            "Кукуруза",
-            "Виноград",
-            "Картофель",
-            "Томат"
-    );
+    private List<String> plantList;
 
     private String selectedPlant = null;
     private File photoFile;
@@ -87,6 +81,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        plantList = Arrays.asList(getResources().getStringArray(R.array.plants));
     }
 
     @Override

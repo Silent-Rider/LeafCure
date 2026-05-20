@@ -17,5 +17,18 @@
     <string name="start">Начать</string>
     <string name="image_description">Изображение</string>
 
+    <string name="apple">Яблоко</string>
+    <string name="corn">Кукуруза</string>
+    <string name="grape">Виноград</string>
+    <string name="potato">Картофель</string>
+    <string name="tomato">Томат</string>
+
+    <string-array name="plants">
+        <item>@string/apple</item>
+        <item>@string/corn</item>
+        <item>@string/grape</item>
+        <item>@string/potato</item>
+        <item>@string/tomato</item>
+    </string-array>
 
 </resources>
