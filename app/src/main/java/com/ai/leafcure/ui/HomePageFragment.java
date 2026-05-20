@@ -30,12 +30,21 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class HomePageFragment extends Fragment {
+    private static final Map<String, String> langPlantNameMap = new HashMap<String, String> () {{
+        put("Яблоко", "apple");
+        put("Кукуруза", "corn");
+        put("Виноград", "grape");
+        put("Картофель", "potato");
+        put("Томат", "tomato");
+    }};
 
     private FragmentHomeBinding binding;
     private List<String> plantList;
@@ -75,6 +84,7 @@ public class HomePageFragment extends Fragment {
         setupClickListeners();
 
         binding.start.setOnClickListener(v -> {
+            String selectedPlant = langPlantNameMap.get(this.selectedPlant);
             Navigation.findNavController(v).navigate(HomePageFragmentDirections.actionHomePageToProcess(selectedPlant, imageUri.toString()));
         });
     }

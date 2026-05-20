@@ -17,12 +17,21 @@ import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentResultBinding;
 import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
+import java.io.InputStream;
+import java.util.Objects;
+
+import android.graphics.BitmapFactory;
 
 @AndroidEntryPoint
 public class ResultFragment extends Fragment {
 
     private FragmentResultBinding binding;
-    private PredictionResult result;
+
+    private String diseaseName;
+    private float confidence;
+    private float severity;
+    private String originalImageUriString;
+    private String spotMaskUriString;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,35 +42,47 @@ public class ResultFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        result = new PredictionResult();
-        result.setDiseaseName("Early Blight");
-        result.setConfidence(0.95f);
-        result.setSeverity(0.35f);
+        ResultFragmentArgs args = ResultFragmentArgs.fromBundle(requireArguments());
+        diseaseName = args.getDiseaseName();
+        confidence = args.getConfidence();
+        severity = args.getSeverity();
+        originalImageUriString = args.getOriginalImageUriString();
+        spotMaskUriString = args.getSpotMaskUriString();
 
         setupUI();
         setupClickListeners();
     }
 
     private void setupUI() {
-        if (result == null) return;
+        binding.diseaseName.setText(diseaseName);
+        binding.confidence.setText(String.format("Вероятность: %.1f%%", confidence * 100));
 
-        binding.diseaseName.setText(result.getDiseaseName());
-        binding.confidence.setText(String.format("Вероятность: %.1f%%", result.getConfidence() * 100));
-
-        int severityPercent = (int) (result.getSeverity() * 100);
+        int severityPercent = (int) (severity * 100);
         binding.progressSeverity.setProgress(severityPercent);
         binding.severityValue.setText(severityPercent + "%");
 
-        String imageUriString = getArguments() != null ? getArguments().getString("image_uri") : null;
-        if (imageUriString != null) {
+        if (originalImageUriString != null && !originalImageUriString.isEmpty()) {
             Glide.with(this)
-                    .load(Uri.parse(imageUriString))
+                    .load(Uri.parse(originalImageUriString))
                     .into(binding.imageOriginal);
         }
 
-        if (result.getMaskBitmap() != null) {
-            Bitmap redMask = colorizeMask(result.getMaskBitmap());
-            binding.spotMask.setImageBitmap(redMask);
+        if (spotMaskUriString != null && !spotMaskUriString.isEmpty()) {
+            try {
+                Bitmap maskBitmap = loadBitmapFromUri(Uri.parse(spotMaskUriString));
+                if (maskBitmap != null) {
+                    Bitmap redMask = colorizeMask(maskBitmap);
+                    binding.spotMask.setImageBitmap(redMask);
+                    binding.isRequiredOrders.setEnabled(true);
+                } else {
+                    binding.isRequiredOrders.setEnabled(false);
+                    binding.isRequiredOrders.setText("Маска недоступна");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                binding.isRequiredOrders.setEnabled(false);
+                binding.isRequiredOrders.setText("Ошибка загрузки маски");
+            }
         } else {
             binding.isRequiredOrders.setEnabled(false);
             binding.isRequiredOrders.setText("Маска недоступна");
@@ -79,6 +100,7 @@ public class ResultFragment extends Fragment {
                 }).start();
             }
         });
+
         binding.treatment.setOnClickListener(v -> showTreatmentBottomSheet());
 
         binding.newDiagnosis.setOnClickListener(v -> {
@@ -89,23 +111,28 @@ public class ResultFragment extends Fragment {
     private void showTreatmentBottomSheet() {
         TreatmentBottomSheetFragment bottomSheet = new TreatmentBottomSheetFragment();
         Bundle args = new Bundle();
-        args.putString("disease_name", result.getDiseaseName());
+        args.putString("disease_name", diseaseName);
         bottomSheet.setArguments(args);
 
         bottomSheet.show(getChildFragmentManager(), "TreatmentBottomSheet");
     }
 
+    private Bitmap loadBitmapFromUri(Uri uri) throws Exception {
+        InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+        return BitmapFactory.decodeStream(inputStream);
+    }
+
     private Bitmap colorizeMask(Bitmap mask) {
         if (mask == null) return null;
 
-        Bitmap coloredMask = mask.copy(mask.getConfig(), true);
+        Bitmap coloredMask = mask.copy(Objects.requireNonNull(mask.getConfig()), true);
         int width = coloredMask.getWidth();
         int height = coloredMask.getHeight();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int pixel = coloredMask.getPixel(x, y);
-                if (Color.red(pixel) > 100 || Color.green(pixel) > 100 || Color.blue(pixel) > 100) {
+                if (Color.red(pixel) > 50 || Color.green(pixel) > 50 || Color.blue(pixel) > 50) {
                     coloredMask.setPixel(x, y, Color.argb(180, 255, 0, 0));
                 } else {
                     coloredMask.setPixel(x, y, Color.TRANSPARENT);

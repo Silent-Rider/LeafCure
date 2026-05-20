@@ -37,6 +37,21 @@
         android:name="com.ai.leafcure.ui.ResultFragment"
         android:label="@string/diagnostics_result"
         tools:layout="@layout/fragment_result">
+        <argument
+            android:name="diseaseName"
+            app:argType="string" />
+        <argument
+            android:name="confidence"
+            app:argType="float" />
+        <argument
+            android:name="severity"
+            app:argType="float" />
+        <argument
+            android:name="originalImageUriString"
+            app:argType="string" />
+        <argument
+            android:name="spotMaskUriString"
+            app:argType="string" />
     </fragment>
 
 </navigation>
