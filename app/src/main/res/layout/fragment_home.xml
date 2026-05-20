@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/plants_diagnosis"
+        android:text="@string/plants_diagnostics"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/forest_green"/>
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/choose_crop_for_diagnosis_start"
+        android:text="@string/choose_crop_for_diagnostics_start"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:layout_marginTop="8dp"/>

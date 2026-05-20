@@ -7,18 +7,30 @@
     <string name="about_button">О программе</string>
     <string name="about_text">Программа была разработана Клименко Кириллом</string>
     <string name="ok">ОК</string>
-    
-    <string name="plants_diagnosis">Диагностика растений</string>
-    <string name="choose_crop_for_diagnosis_start">Выберите культуру для начала диагностики</string>
+
+    <!-- HomePage -->
+    <string name="plants_diagnostics">Диагностика растений</string>
+    <string name="choose_crop_for_diagnostics_start">Выберите культуру для начала диагностики</string>
     <string name="choose_plant">Выберите растение</string>
     <string name="crop">Культура</string>
     <string name="camera">Камера</string>
     <string name="gallery">Галерея</string>
     <string name="start">Начать</string>
-    <string name="image_description">Изображение</string>
 
+    <!-- Process -->
+    <string name="diagnostics_in_process">Идет диагностика</string>
+
+    <!-- Result -->
+    <string name="diagnostics_result">Результат диагностики</string>
+    <string name="diagnosis">Диагноз</string>
+    <string name="severity_score">Степень поражения</string>
+    <string name="image_analysis">Анализ изображения</string>
+    <string name="show_lesions">Показать очаги поражения</string>
     <string name="diagnosis_in_process">Идет диагностика</string>
+    <string name="treatment_recommendations">Рекомендации по лечению</string>
+    <string name="close">Закрыть</string>
 
+    <!-- Common -->
     <string name="apple">Яблоко</string>
     <string name="corn">Кукуруза</string>
     <string name="grape">Виноград</string>
@@ -32,5 +44,7 @@
         <item>@string/potato</item>
         <item>@string/tomato</item>
     </string-array>
+
+    <string name="image_description">Изображение</string>
 
 </resources>

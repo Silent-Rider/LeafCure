@@ -37,4 +37,10 @@
     <style name="CustomSpinner" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
     </style>
+
+    <style name="switch_compat_style">
+        <item name="thumbTint">@drawable/switch_thumb</item>
+        <item name="track">@drawable/switch_track_violet</item>
+        <item name="android:textColor">@color/web_middle_text</item>
+    </style>
 </resources>

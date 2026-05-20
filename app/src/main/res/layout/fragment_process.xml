@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            tools:text="@string/choose_crop_for_diagnosis_start"
+            tools:text="@string/choose_crop_for_diagnostics_start"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:layout_marginTop="@dimen/horizontal_element_margin"/>

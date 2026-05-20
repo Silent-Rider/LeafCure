@@ -1,4 +1,4 @@
-package com.ai.leafcure.model;
+package com.ai.leafcure.data;
 
 public class LeafCureDatabase {
 }

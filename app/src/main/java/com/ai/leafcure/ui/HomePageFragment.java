@@ -75,7 +75,7 @@ public class HomePageFragment extends Fragment {
         setupClickListeners();
 
         binding.start.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(HomePageFragmentDirections.actionHomePageToLoad(selectedPlant, imageUri.toString()));
+            Navigation.findNavController(v).navigate(HomePageFragmentDirections.actionHomePageToProcess(selectedPlant, imageUri.toString()));
         });
     }
 
@@ -149,6 +149,7 @@ public class HomePageFragment extends Fragment {
     private void handleGalleryResult(Uri uri) {
         if (uri != null) {
             Toast.makeText(getContext(), "Фото выбрано: " + selectedPlant, Toast.LENGTH_SHORT).show();
+            imageUri = uri;
             processImage(uri);
         } else {
             Toast.makeText(getContext(), "Фото не выбрано", Toast.LENGTH_SHORT).show();

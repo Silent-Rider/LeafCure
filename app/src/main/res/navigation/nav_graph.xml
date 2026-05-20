@@ -12,21 +12,31 @@
         android:label="@string/main_menu"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_home_page_to_load"
+            android:id="@+id/action_home_page_to_process"
             app:destination="@id/process" />
     </fragment>
 
     <fragment
         android:id="@+id/process"
         android:name="com.ai.leafcure.ui.ProcessFragment"
-        android:label="@string/plants_diagnosis"
+        android:label="@string/plants_diagnostics"
         tools:layout="@layout/fragment_process">
+        <action
+            android:id="@+id/action_process_to_result"
+            app:destination="@id/result" />
         <argument
             android:name="selectedPlant"
             app:argType="string" />
         <argument
             android:name="imageUri"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/result"
+        android:name="com.ai.leafcure.ui.ResultFragment"
+        android:label="@string/diagnostics_result"
+        tools:layout="@layout/fragment_result">
     </fragment>
 
 </navigation>

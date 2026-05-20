@@ -2,6 +2,7 @@ package com.ai.leafcure.ui;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.ai.leafcure.databinding.FragmentProcessBinding;
 
@@ -45,6 +47,9 @@ public class ProcessFragment extends Fragment {
             }
         }
 
+        new Handler().postDelayed(() ->
+                Navigation.findNavController(binding.getRoot()).navigate(ProcessFragmentDirections.actionProcessToResult()),
+                500);
     }
 
     @Override
