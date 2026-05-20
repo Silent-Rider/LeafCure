@@ -66,6 +66,7 @@
                     android:inputType="none"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
+                    android:saveEnabled="false"
                     tools:ignore="LabelFor"/>
 
             </com.google.android.material.textfield.TextInputLayout>

@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentResultBinding;
+import com.ai.leafcure.utils.ImageUtils;
 import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class ResultFragment extends Fragment {
             try {
                 Bitmap maskBitmap = loadBitmapFromUri(Uri.parse(spotMaskUriString));
                 if (maskBitmap != null) {
-                    Bitmap redMask = colorizeMask(maskBitmap);
+                    Bitmap redMask = ImageUtils.colorizeMask(maskBitmap);
                     binding.spotMask.setImageBitmap(redMask);
                     binding.isRequiredOrders.setEnabled(true);
                 } else {
@@ -120,26 +121,6 @@ public class ResultFragment extends Fragment {
     private Bitmap loadBitmapFromUri(Uri uri) throws Exception {
         InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
         return BitmapFactory.decodeStream(inputStream);
-    }
-
-    private Bitmap colorizeMask(Bitmap mask) {
-        if (mask == null) return null;
-
-        Bitmap coloredMask = mask.copy(Objects.requireNonNull(mask.getConfig()), true);
-        int width = coloredMask.getWidth();
-        int height = coloredMask.getHeight();
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int pixel = coloredMask.getPixel(x, y);
-                if (Color.red(pixel) > 50 || Color.green(pixel) > 50 || Color.blue(pixel) > 50) {
-                    coloredMask.setPixel(x, y, Color.argb(180, 255, 0, 0));
-                } else {
-                    coloredMask.setPixel(x, y, Color.TRANSPARENT);
-                }
-            }
-        }
-        return coloredMask;
     }
 
     @Override

@@ -90,11 +90,9 @@ public class HomePageFragment extends Fragment {
     }
 
     private void setupAutoCompleteTextView() {
-        AutoCompleteTextView autoComplete = binding.plantAutoComplete;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.item_dropdown, plantList);
-        autoComplete.setAdapter(adapter);
-
-        autoComplete.setOnItemClickListener((parent, view, position, id) -> {
+        binding.plantAutoComplete.setAdapter(adapter);
+        binding.plantAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             selectedPlant = parent.getItemAtPosition(position).toString();
             binding.layoutActions.setVisibility(View.VISIBLE);
             imageUri = null;

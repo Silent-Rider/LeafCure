@@ -86,7 +86,7 @@ public class ProcessFragment extends Fragment {
 
                     spotMaskBitmap = convertFloatMaskToBitmap(spotMask);
 
-                    spotMaskUri = saveBitmapToTempFile(spotMaskBitmap);
+                    spotMaskUri = saveBitmapToTempFile(spotMaskBitmap, originalBitmap);
 
                     diagnosisResult = diseaseName;
                 } else {
@@ -191,12 +191,19 @@ public class ProcessFragment extends Fragment {
         return bitmap;
     }
 
-    private Uri saveBitmapToTempFile(Bitmap bitmap) throws Exception {
+    private Uri saveBitmapToTempFile(Bitmap spotMaskBitmap, Bitmap originalImage) throws Exception {
+        Bitmap resizedMask = Bitmap.createScaledBitmap(
+                spotMaskBitmap,
+                originalImage.getWidth(),
+                originalImage.getHeight(),
+                true
+        );
+
         File cacheDir = requireContext().getCacheDir();
         File tempFile = File.createTempFile("spot_mask_", ".png", cacheDir);
 
         FileOutputStream fos = new FileOutputStream(tempFile);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        resizedMask.compress(Bitmap.CompressFormat.PNG, 100, fos);
         fos.flush();
         fos.close();
 
