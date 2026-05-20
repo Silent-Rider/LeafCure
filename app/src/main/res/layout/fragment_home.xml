@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/web_disabled_background"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/plants_diagnosis"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/forest_green"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_crop_for_diagnosis_start"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_plant_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/web_green_gradient_start">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/crop"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="@dimen/vertical_margin"
+                app:boxBackgroundColor="@color/web_green_gradient_start"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/plant_input_layout"
+                style="@style/CustomSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/choose_plant"
+                app:hintTextColor="@color/dark_green"
+                app:boxStrokeColor="@color/dark_green"
+                app:endIconTint="@color/dark_green"
+                app:boxBackgroundColor="@color/web_green_gradient_start">
+
+                <AutoCompleteTextView
+                    android:id="@+id/plant_auto_complete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    tools:ignore="LabelFor"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/layout_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/camera"
+            android:text="@string/camera"
+            style="@style/button_blank_style"
+            android:layout_weight="1"
+            android:padding="@dimen/item_margin"
+            app:icon="@drawable/camera"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/gallery"
+            android:text="@string/gallery"
+            style="@style/button_blank_style"
+            android:layout_weight="1"
+            android:padding="@dimen/item_margin"
+            app:icon="@drawable/gallery"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/recycler_view_margin"
+        android:contentDescription="@string/image_description"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/start"
+        android:text="@string/start"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingHorizontal="@dimen/table_row_edge_margin"
+        android:paddingVertical="@dimen/base_margin"
+        style="@style/button_fill_style"
+        android:visibility="gone"/>
+
+</LinearLayout>

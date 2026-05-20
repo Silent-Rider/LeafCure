@@ -80,4 +80,6 @@
     <color name="gray_text">#868686</color>
     <color name="light_green">#E6F3E6</color>
     <color name="poisonous_green">#007F00</color>
+
+    <color name="dark_green">#0A6A47</color>
 </resources>

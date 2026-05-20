@@ -7,4 +7,15 @@
     <string name="about_button">О программе</string>
     <string name="about_text">Программа была разработана Клименко Кириллом</string>
     <string name="ok">ОК</string>
+    
+    <string name="plants_diagnosis">Диагностика растений</string>
+    <string name="choose_crop_for_diagnosis_start">Выберите культуру для начала диагностики</string>
+    <string name="choose_plant">Выберите растение</string>
+    <string name="crop">Культура</string>
+    <string name="camera">Камера</string>
+    <string name="gallery">Галерея</string>
+    <string name="start">Начать</string>
+    <string name="image_description">Изображение</string>
+
+
 </resources>
