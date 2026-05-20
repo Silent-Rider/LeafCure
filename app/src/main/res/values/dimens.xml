@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="base_margin">10dp</dimen>
+    <dimen name="horizontal_margin">16dp</dimen>
+    <dimen name="vertical_margin">16dp</dimen>
+    <dimen name="header_vertical_margin">10dp</dimen>
+    <dimen name="nav_header_padding_top">43dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="item_dialog_list_margin">20dp</dimen>
+    <dimen name="recycler_view_margin">5dp</dimen>
+    <dimen name="recycler_view_small_margin">2.5dp</dimen>
+    <dimen name="item_margin">8dp</dimen>
+    <dimen name="bottom_navigation_view_height">30dp</dimen>
+    <dimen name="table_row_edge_margin">25dp</dimen>
+    <dimen name="horizontal_element_margin">12dp</dimen>
+    <dimen name="recycler_card_horizontal_margin">13dp</dimen>
+</resources>

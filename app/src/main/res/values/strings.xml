@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LeafCure</string>
+    <string name="main_menu">Главное меню</string>
+    <string name="open_drawer">Открыть меню</string>
+    <string name="close_drawer">Закрыть меню</string>
+    <string name="about_button">О программе</string>
+    <string name="about_text">Программа была разработана Клименко Кириллом</string>
+    <string name="ok">ОК</string>
+</resources>

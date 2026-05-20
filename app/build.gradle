@@ -1,0 +1,99 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.dagger.hilt.android'
+    id 'androidx.navigation.safeargs'
+}
+
+android {
+    namespace 'com.ai.leafcure'
+    compileSdk = 37
+
+    defaultConfig {
+        applicationId "com.ai.leafcure"
+        minSdk 24
+        targetSdk 37
+        versionCode 1
+        versionName "1.0"
+        ndkVersion = "25.2.9519653"
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+    namespace 'com.ai.leafcure'
+
+    lint {
+        disable 'SelectedPhotoAccess'
+        disable 'PhotoAndVideoPolicy'
+        disable 'ScopedStorage'
+    }
+}
+
+dependencies {
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.constraintlayout
+    implementation libs.swiperefreshlayout
+
+    implementation libs.work.runtime
+
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.viewmodel.ktx
+
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+
+    implementation libs.room.runtime
+    annotationProcessor libs.room.compiler
+    implementation libs.room.rxjava3
+
+    implementation libs.rxjava
+    implementation libs.rxbinding.appcompat
+
+    implementation libs.hilt.android
+    annotationProcessor libs.hilt.compiler
+
+    implementation libs.hilt.work
+    annotationProcessor libs.androidx.hilt.compiler
+
+    implementation libs.jackson.core
+    implementation libs.jackson.annotations
+    implementation libs.jackson.databind
+    implementation libs.jackson.datatype.jsr310
+
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation libs.glide
+    implementation libs.stfalconimageviewer
+
+    implementation(platform(libs.kotlin.bom))
+
+    implementation libs.litert
+    implementation libs.opencv
+}

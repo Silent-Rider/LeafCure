@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="green">#00FF00</color>
+    <color name="light_blue">#00FFFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="pink">#FF00FF</color>
+
+    <color name="web_primary_text">#141A25</color>
+    <color name="web_middle_text">#484F55</color>
+    <color name="web_tertiary_text">#818292</color>
+    <color name="web_background">#E6E8E7</color>
+    <color name="web_main_accent_color">#3E53A0</color>
+    <color name="web_accent_color">#BC9CFF</color>
+    <color name="web_disabled_background">#E9ECEF</color>
+    <color name="web_disabled_text">#979798</color>
+    <color name="web_frame">#CACED6</color>
+    <color name="web_marker_orange">#FE8B63</color>
+    <color name="web_marker_red">#FF7273</color>
+    <color name="light_red">#FFB7B7</color>
+    <color name="web_marker_violet">#AB8FFD</color>
+    <color name="web_marker_yellow">#FFECCC</color>
+    <color name="web_marker_green">#12D8B1</color>
+    <color name="web_marker_gray">#BABABB</color>
+    <color name="web_green_gradient_start">#6FCF97</color>
+    <color name="web_green_gradient_end">#66D2EA</color>
+    <color name="web_accent_gradient_end">#8BA4F9</color>
+    <color name="web_inactive">#FAFAFA</color>
+    <color name="check_list_item_done_background">#F4F4F6</color>
+    <color name="show_hide_accent_color">#307F89</color>
+    <color name="cell_stroke_grey">#E9EDF6</color>
+    <color name="cell_blue">#DCEAF7</color>
+    <color name="gray_stroke">#C5C6CC</color>
+
+    <color name="frame_color">#C4D1DA</color>
+    <color name="additional_text">#89979F</color>
+    <color name="additional_color">#E63946</color>
+    <color name="main_text">#1D3557</color>
+    <color name="main_color">#457B9D</color>
+
+    <color name="machine_time">#5BD75E</color>
+    <color name="machine_time_light_1">#7AE07C</color>
+    <color name="machine_time_light_2">#98E99A</color>
+    <color name="machine_time_light_3">#B6F2B8</color>
+    <color name="machine_time_light_4">#D4FBD6</color>
+    <color name="classified_downtime">#FED688</color>
+    <color name="unclassified_downtime">#FC6262</color>
+    <color name="no_connection">#D3C9CB</color>
+    <color name="unmarked">#BABABB</color>
+
+    <color name="table_head">#2F3B50</color>
+    <color name="btn_background">#AFB4C6</color>
+    <color name="background">#EDEEF0</color>
+    <color name="button_auth_blue">#3D539F</color>
+    <color name="buttons_blue">#414D78</color>
+
+    <color name="chat_1">#40B6FF</color>
+    <color name="chat_2">#79D279</color>
+    <color name="chat_3">#FF70B0</color>
+    <color name="chat_4">#FF875C</color>
+    <color name="chat_5">#A17DF5</color>
+    <color name="chat_6">#7979F7</color>
+    <color name="chat_7">#CE7AF0</color>
+    <color name="chat_8">#FFD86B</color>
+    <color name="chat_9">#638DFF</color>
+
+    <color name="lime_green">#32CD32</color>
+    <color name="forest_green">#008000</color>
+    <color name="design_cyan_color">#00C896</color>
+    <color name="design_gray_track">#E0E0E0</color>
+    <color name="gray_text">#868686</color>
+    <color name="light_green">#E6F3E6</color>
+    <color name="poisonous_green">#007F00</color>
+</resources>
