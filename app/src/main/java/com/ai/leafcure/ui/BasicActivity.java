@@ -79,6 +79,10 @@ public class BasicActivity extends AppCompatActivity {
                     drawer.closeDrawer(GravityCompat.START);
                     return;
                 }
+                NavDestination currentDestination = navController.getCurrentDestination();
+                if (currentDestination != null && currentDestination.getId() == R.id.process) {
+                    return;
+                }
                 if (!navController.popBackStack()) {
                     setEnabled(false);
                     getOnBackPressedDispatcher().onBackPressed();

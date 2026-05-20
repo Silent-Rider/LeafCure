@@ -17,6 +17,8 @@
     <string name="start">Начать</string>
     <string name="image_description">Изображение</string>
 
+    <string name="diagnosis_in_process">Идет диагностика</string>
+
     <string name="apple">Яблоко</string>
     <string name="corn">Кукуруза</string>
     <string name="grape">Виноград</string>

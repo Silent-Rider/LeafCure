@@ -10,17 +10,18 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentHomeBinding;
@@ -40,42 +41,19 @@ public class HomePageFragment extends Fragment {
     private List<String> plantList;
 
     private String selectedPlant = null;
-    private File photoFile;
+    private Uri imageUri;
 
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                getActivity();
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Toast.makeText(getContext(), "Фото сделано: " + selectedPlant, Toast.LENGTH_SHORT).show();
-                    processImage(Uri.fromFile(photoFile));
-                } else {
-                    Toast.makeText(getContext(), "Съемка отменена", Toast.LENGTH_SHORT).show();
-                }
-            }
+            this::handleCameraResult
     );
-
     private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    Toast.makeText(getContext(), "Фото выбрано: " + selectedPlant, Toast.LENGTH_SHORT).show();
-                    processImage(uri);
-                } else {
-                    Toast.makeText(getContext(), "Фото не выбрано", Toast.LENGTH_SHORT).show();
-                }
-            }
+            this::handleGalleryResult
     );
-
-    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            isGranted -> {
-                if (isGranted) {
-                    openCamera();
-                } else {
-                    Toast.makeText(getContext(), "Нет разрешения на камеру", Toast.LENGTH_LONG).show();
-                }
-            }
+            this::handlePermissionResult
     );
 
     @Override
@@ -95,6 +73,10 @@ public class HomePageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setupAutoCompleteTextView();
         setupClickListeners();
+
+        binding.start.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(HomePageFragmentDirections.actionHomePageToLoad(selectedPlant, imageUri.toString()));
+        });
     }
 
     private void setupAutoCompleteTextView() {
@@ -105,7 +87,7 @@ public class HomePageFragment extends Fragment {
         autoComplete.setOnItemClickListener((parent, view, position, id) -> {
             selectedPlant = parent.getItemAtPosition(position).toString();
             binding.layoutActions.setVisibility(View.VISIBLE);
-            photoFile = null;
+            imageUri = null;
             binding.image.setVisibility(View.GONE);
             binding.start.setVisibility(View.GONE);
         });
@@ -114,7 +96,7 @@ public class HomePageFragment extends Fragment {
     private void setupClickListeners() {
         binding.camera.setOnClickListener(v -> {
             if (getActivity() != null) {
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+                permissionLauncher.launch(Manifest.permission.CAMERA);
             }
         });
         binding.gallery.setOnClickListener(v -> {
@@ -125,14 +107,15 @@ public class HomePageFragment extends Fragment {
     @SuppressLint("QueryPermissionsNeeded")
     private void openCamera() {
         try {
-            photoFile = createImageFile();
+            File imageFile = createImageFile();
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri photoURI = FileProvider.getUriForFile(requireContext(),
+            Uri imageUri = FileProvider.getUriForFile(requireContext(),
                     requireContext().getPackageName() + ".provider",
-                    photoFile);
+                    imageFile);
+            this.imageUri = imageUri;
 
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraLauncher.launch(takePictureIntent);
         } catch (IOException ex) {
             Toast.makeText(getContext(), "Ошибка создания файла: " + ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -152,6 +135,32 @@ public class HomePageFragment extends Fragment {
                 .into(binding.image);
         binding.image.setVisibility(View.VISIBLE);
         binding.start.setVisibility(View.VISIBLE);
+    }
+
+    private void handleCameraResult(ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Toast.makeText(getContext(), "Фото сделано: " + selectedPlant, Toast.LENGTH_SHORT).show();
+            processImage(imageUri);
+        } else {
+            Toast.makeText(getContext(), "Съемка отменена", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleGalleryResult(Uri uri) {
+        if (uri != null) {
+            Toast.makeText(getContext(), "Фото выбрано: " + selectedPlant, Toast.LENGTH_SHORT).show();
+            processImage(uri);
+        } else {
+            Toast.makeText(getContext(), "Фото не выбрано", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handlePermissionResult(Boolean isGranted) {
+        if (isGranted) {
+            openCamera();
+        } else {
+            Toast.makeText(getContext(), "Нет разрешения на камеру", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

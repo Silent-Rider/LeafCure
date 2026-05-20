@@ -11,6 +11,22 @@
         android:name="com.ai.leafcure.ui.HomePageFragment"
         android:label="@string/main_menu"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_page_to_load"
+            app:destination="@id/process" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/process"
+        android:name="com.ai.leafcure.ui.ProcessFragment"
+        android:label="@string/plants_diagnosis"
+        tools:layout="@layout/fragment_process">
+        <argument
+            android:name="selectedPlant"
+            app:argType="string" />
+        <argument
+            android:name="imageUri"
+            app:argType="string" />
     </fragment>
 
 </navigation>
