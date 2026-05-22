@@ -11,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavGraph;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -52,17 +53,8 @@ public class BasicActivity extends AppCompatActivity {
         navGraph.setStartDestination(R.id.home_page);
         navController.setGraph(navGraph);
 
-        MenuItem homePage = navigationView.getMenu().findItem(R.id.home_page);
-        homePage.setOnMenuItemClickListener(menuItem -> {
-            NavDestination currentDestination = navController.getCurrentDestination();
-            if (currentDestination != null && currentDestination.getId() != R.id.home_page) {
-                navController.navigate(R.id.home_page);
-            }
-            drawer.closeDrawer(GravityCompat.START);
-            return true;
-        });
-
-        binding.navView.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
+        MenuItem about = navigationView.getMenu().findItem(R.id.about);
+        about.setOnMenuItemClickListener(item -> {
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.about_button))
                     .setMessage(getString(R.string.about_text))

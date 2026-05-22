@@ -1,7 +1,6 @@
 package com.ai.leafcure.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
@@ -19,9 +19,10 @@ import com.ai.leafcure.utils.ImageUtils;
 import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.io.InputStream;
-import java.util.Objects;
 
 import android.graphics.BitmapFactory;
+
+import javax.inject.Inject;
 
 @AndroidEntryPoint
 public class ResultFragment extends Fragment {
@@ -33,6 +34,8 @@ public class ResultFragment extends Fragment {
     private float severity;
     private String originalImageUriString;
     private String spotMaskUriString;
+    @Inject
+    ImageUtils imageUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class ResultFragment extends Fragment {
             try {
                 Bitmap maskBitmap = loadBitmapFromUri(Uri.parse(spotMaskUriString));
                 if (maskBitmap != null) {
-                    Bitmap redMask = ImageUtils.colorizeMask(maskBitmap);
+                    Bitmap redMask = imageUtils.colorizeMask(maskBitmap);
                     binding.spotMask.setImageBitmap(redMask);
                     binding.isRequiredOrders.setEnabled(true);
                 } else {

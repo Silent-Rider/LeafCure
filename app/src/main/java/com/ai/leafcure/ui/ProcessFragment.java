@@ -1,8 +1,8 @@
 package com.ai.leafcure.ui;
 
+import static com.ai.leafcure.utils.ImageUtils.MODEL_INPUT_SIZE;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,27 +11,39 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+
+import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentProcessBinding;
 import com.ai.leafcure.ml.*;
+import com.ai.leafcure.utils.ImageUtils;
+import com.ai.leafcure.utils.ModelFactory;
+
 import dagger.hilt.android.AndroidEntryPoint;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Objects;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
 
 @AndroidEntryPoint
 public class ProcessFragment extends Fragment {
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private FragmentProcessBinding binding;
     private String selectedPlant;
     private Uri originalImageUri;
 
-    private static final int MODEL_INPUT_SIZE = 256;
+    @Inject
+    ModelFactory modelFactory;
+    @Inject
+    ImageUtils imageUtils;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,25 +54,22 @@ public class ProcessFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ProcessFragmentArgs args = ProcessFragmentArgs.fromBundle(requireArguments());
         selectedPlant = args.getSelectedPlant();
         originalImageUri = Uri.parse(args.getImageUri());
-
         runDiagnosis();
     }
 
     private void runDiagnosis() {
         executor.execute(() -> {
             try {
-                Bitmap originalBitmap = loadBitmapFromUri(originalImageUri);
-
+                Bitmap originalBitmap = imageUtils.loadBitmapFromUri(originalImageUri);
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE, true);
 
-                LeafSegmenter leafSegmenter = new LeafSegmenter(requireContext());
-                BinaryClassifier binaryClassifier = new BinaryClassifier(requireContext(), selectedPlant);
-                CategoricalClassifier categoricalClassifier = new CategoricalClassifier(requireContext(), selectedPlant);
-                SpotSegmenter spotSegmenter = new SpotSegmenter(requireContext());
+                LeafSegmenter leafSegmenter = modelFactory.createLeafSegmenter();
+                BinaryClassifier binaryClassifier = modelFactory.createBinaryClassifier(selectedPlant);
+                CategoricalClassifier categoricalClassifier = modelFactory.createCategoricalClassifier(selectedPlant);
+                SpotSegmenter spotSegmenter = modelFactory.createSpotSegmenter();
 
                 float[][] leafMask = leafSegmenter.segmentLeaf(resizedBitmap);
 
@@ -70,7 +79,6 @@ public class ProcessFragment extends Fragment {
                 String diagnosisResult;
                 float confidence;
                 float severity = 0.0f;
-                Bitmap spotMaskBitmap;
                 Uri spotMaskUri = null;
 
                 if (isDiseased) {
@@ -79,14 +87,13 @@ public class ProcessFragment extends Fragment {
                     confidence = classProbabilities[predictedClassIndex];
                     String diseaseName = categoricalClassifier.getClassName(predictedClassIndex);
 
-                    Bitmap maskedForSpots = applyMaskToBitmap(resizedBitmap, leafMask);
+                    Bitmap maskedForSpots = imageUtils.applyMaskToBitmap(resizedBitmap, leafMask);
                     float[][] spotMask = spotSegmenter.segmentSpots(maskedForSpots);
 
                     severity = calculateSeverity(leafMask, spotMask);
 
-                    spotMaskBitmap = convertFloatMaskToBitmap(spotMask);
-
-                    spotMaskUri = saveBitmapToTempFile(spotMaskBitmap, originalBitmap);
+                    Bitmap spotMaskBitmap = imageUtils.convertFloatMaskToBitmap(spotMask);
+                    spotMaskUri = imageUtils.saveBitmapToTempFile(spotMaskBitmap, originalBitmap);
 
                     diagnosisResult = diseaseName;
                 } else {
@@ -126,18 +133,11 @@ public class ProcessFragment extends Fragment {
                 spotSegmenter.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
                 requireActivity().runOnUiThread(() -> {
                     binding.processText.setText("Ошибка диагностики: " + e.getMessage());
                 });
             }
         });
-    }
-
-
-    private Bitmap loadBitmapFromUri(Uri uri) throws Exception {
-        InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-        return BitmapFactory.decodeStream(inputStream);
     }
 
     private int getMaxIndex(float[] array) {
@@ -148,21 +148,6 @@ public class ProcessFragment extends Fragment {
             }
         }
         return maxIndex;
-    }
-
-    private Bitmap applyMaskToBitmap(Bitmap src, float[][] mask) {
-        Bitmap result = src.copy(Objects.requireNonNull(src.getConfig()), true);
-        int w = src.getWidth();
-        int h = src.getHeight();
-
-        for (int y = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
-                if (mask[y][x] < 0.5f) {
-                    result.setPixel(x, y, Color.BLACK);
-                }
-            }
-        }
-        return result;
     }
 
     private float calculateSeverity(float[][] leafMask, float[][] spotMask) {
@@ -178,36 +163,6 @@ public class ProcessFragment extends Fragment {
 
         if (leafArea == 0) return 0;
         return spotArea / leafArea;
-    }
-
-    private Bitmap convertFloatMaskToBitmap(float[][] mask) {
-        Bitmap bitmap = Bitmap.createBitmap(ProcessFragment.MODEL_INPUT_SIZE, ProcessFragment.MODEL_INPUT_SIZE, Bitmap.Config.ARGB_8888);
-        for (int y = 0; y < ProcessFragment.MODEL_INPUT_SIZE; y++) {
-            for (int x = 0; x < ProcessFragment.MODEL_INPUT_SIZE; x++) {
-                int grayValue = (int) (mask[y][x] * 255);
-                bitmap.setPixel(x, y, Color.argb(255, grayValue, grayValue, grayValue));
-            }
-        }
-        return bitmap;
-    }
-
-    private Uri saveBitmapToTempFile(Bitmap spotMaskBitmap, Bitmap originalImage) throws Exception {
-        Bitmap resizedMask = Bitmap.createScaledBitmap(
-                spotMaskBitmap,
-                originalImage.getWidth(),
-                originalImage.getHeight(),
-                true
-        );
-
-        File cacheDir = requireContext().getCacheDir();
-        File tempFile = File.createTempFile("spot_mask_", ".png", cacheDir);
-
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        resizedMask.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        fos.flush();
-        fos.close();
-
-        return Uri.fromFile(tempFile);
     }
 
     @Override

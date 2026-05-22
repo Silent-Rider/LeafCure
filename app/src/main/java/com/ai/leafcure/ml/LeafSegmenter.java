@@ -11,22 +11,19 @@ import java.util.Map;
 
 public class LeafSegmenter extends BaseModel {
 
-    public LeafSegmenter(Context context) throws Exception {
-        super(context, "segment/leaf_seg.tflite");
+    public LeafSegmenter(Context context, ImageUtils imageUtils) {
+        super(context, imageUtils, "segment/leaf_seg.tflite");
     }
 
     public float[][] segmentLeaf(Bitmap bitmap) {
         if (bitmap.getWidth() != inputSize || bitmap.getHeight() != inputSize) {
             throw new IllegalArgumentException("Bitmap size mismatch. Expected " + inputSize + "x" + inputSize);
         }
-
-        ByteBuffer inputBuffer = ImageUtils.bitmapToFloatBuffer(bitmap);
-
+        ByteBuffer inputBuffer = imageUtils.bitmapToFloatBuffer(bitmap);
         float[][][][] outputArray = new float[1][inputSize][inputSize][1];
 
         Map<Integer, Object> outputs = new HashMap<>();
         outputs.put(0, outputArray);
-
         interpreter.runForMultipleInputsOutputs(new Object[]{inputBuffer}, outputs);
 
         float[][] mask = new float[inputSize][inputSize];

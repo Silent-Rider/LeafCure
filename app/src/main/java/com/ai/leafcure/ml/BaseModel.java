@@ -3,21 +3,29 @@ package com.ai.leafcure.ml;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 
+import com.ai.leafcure.utils.ImageUtils;
+
 import org.tensorflow.lite.Interpreter;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 public abstract class BaseModel {
-    protected Interpreter interpreter;
-    protected int inputSize;
 
-    public BaseModel(Context context, String modelPath) throws Exception {
+    protected final Context context;
+    protected final Interpreter interpreter;
+    protected final ImageUtils imageUtils;
+    protected final int inputSize;
+
+    public BaseModel(Context context, ImageUtils imageUtils, String modelPath) {
+        this.context = context;
         this.interpreter = loadModelFile(context, modelPath);
+        this.imageUtils = imageUtils;
         this.inputSize = interpreter.getInputTensor(0).shape()[1];
     }
 
-    private Interpreter loadModelFile(Context context, String modelPath) throws Exception {
+    private Interpreter loadModelFile(Context context, String modelPath)  {
         try (AssetFileDescriptor fileDescriptor = context.getAssets().openFd(modelPath);
              FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor())) {
 
@@ -35,6 +43,8 @@ public abstract class BaseModel {
             options.setNumThreads(4);
 
             return new Interpreter(mappedByteBuffer, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

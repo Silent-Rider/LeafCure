@@ -33,13 +33,12 @@ public class TreatmentBottomSheetFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         String diseaseName = getArguments() != null ? getArguments().getString("disease_name") : "Неизвестно";
-        binding.tvDiseaseName.setText(diseaseName);
+        binding.diseaseName.setText(diseaseName);
 
         String advice = TREATMENT_ADVICE.getOrDefault(diseaseName,
                 "Конкретные рекомендации для этого заболевания отсутствуют. Обратитесь к агроному.");
 
         binding.description.setText(advice);
-
         binding.close.setOnClickListener(v -> dismiss());
     }
 

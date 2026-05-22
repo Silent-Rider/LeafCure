@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class SpotSegmenter extends BaseModel {
 
-    public SpotSegmenter(Context context) throws Exception {
-        super(context, "segment/spot_seg.tflite");
+    public SpotSegmenter(Context context, ImageUtils imageUtils) {
+        super(context, imageUtils, "segment/spot_seg.tflite");
     }
 
     public float[][] segmentSpots(Bitmap bitmap) {
@@ -20,7 +20,7 @@ public class SpotSegmenter extends BaseModel {
             throw new IllegalArgumentException("Bitmap size mismatch.");
         }
 
-        ByteBuffer inputBuffer = ImageUtils.bitmapToFloatBuffer(bitmap);
+        ByteBuffer inputBuffer = imageUtils.bitmapToFloatBuffer(bitmap);
 
         float[][][][] outputArray = new float[1][inputSize][inputSize][1];
 
