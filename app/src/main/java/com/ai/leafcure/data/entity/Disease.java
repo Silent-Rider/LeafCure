@@ -17,6 +17,12 @@ public class Disease {
     private String russianName;
     private String fullEnglishName;
 
+    public Disease() {}
+
+    public Disease(String russianName) {
+        this.russianName = russianName;
+    }
+
     public Integer getId() {
         return id;
     }

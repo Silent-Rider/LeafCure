@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class ResultFragment extends Fragment {
 
     private FragmentResultBinding binding;
-    private String diseaseName;
+    private Disease disease;
     private float confidence;
     private float severity;
     private String originalImageUriString;
@@ -61,18 +61,15 @@ public class ResultFragment extends Fragment {
         String diseaseName = args.getDiseaseName();
         if (diseaseName != null) {
             if (Objects.equals(diseaseName, "Healthy")) {
-                this.diseaseName = "Здоров";
+                disease = new Disease("Здоров");
                 binding.showLesions.setVisibility(View.GONE);
                 binding.treatmentRecommendations.setVisibility(View.GONE);
             } else {
-                Disease disease = leafCureDatabase.diseaseDao().getByFullEnglishName(diseaseName);
-                if (disease != null) {
-                    this.diseaseName = disease.getRussianName();
-                }
+                disease = leafCureDatabase.diseaseDao().getByFullEnglishName(diseaseName);
             }
         }
-        this.confidence = args.getConfidence();
-        isDiagnostics = this.diseaseName != null && this.confidence > 0;
+        confidence = args.getConfidence();
+        isDiagnostics = disease != null && confidence > 0;
 
         severity = args.getSeverity();
         originalImageUriString = args.getOriginalImageUriString();
@@ -85,7 +82,7 @@ public class ResultFragment extends Fragment {
 
     private void setupUI() {
         if (isDiagnostics) {
-            binding.diseaseName.setText(diseaseName);
+            binding.diseaseName.setText(disease.getRussianName());
             @SuppressLint("DefaultLocale")
             String confidence = String.format("Вероятность: %.1f%%", this.confidence * 100);
             binding.confidence.setText(confidence);
@@ -129,8 +126,7 @@ public class ResultFragment extends Fragment {
     private void showTreatmentBottomSheet() {
         TreatmentBottomSheetFragment bottomSheet = new TreatmentBottomSheetFragment();
         Bundle args = new Bundle();
-        args.putString("disease_name", diseaseName);
-        Disease disease = leafCureDatabase.diseaseDao().getByRussianName(diseaseName);
+        args.putString("disease_name", disease.getRussianName());
         args.putString("treatment", leafCureDatabase.treatmentDao().getContentByDiseaseId(disease.getId()));
         bottomSheet.setArguments(args);
         bottomSheet.show(getChildFragmentManager(), "TreatmentBottomSheet");
