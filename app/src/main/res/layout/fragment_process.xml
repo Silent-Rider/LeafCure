@@ -15,6 +15,7 @@
         tools:ignore="UselessParent">
 
         <TextView
+            android:id="@+id/process_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -34,17 +35,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/nav_header_padding_top"
             android:visibility="visible"/>
-
-        <TextView
-            android:id="@+id/process_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            tools:text="@string/choose_crop_for_diagnostics_start"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="@dimen/horizontal_element_margin"/>
 
     </LinearLayout>
 

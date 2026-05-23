@@ -2,9 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/home_page"
-            android:icon="@drawable/home_page"
-            android:title="@string/main_menu" />
+            android:id="@+id/diagnostics"
+            android:icon="@drawable/leaf"
+            android:title="@string/plants_diagnostics" />
+        <item
+            android:id="@+id/lesion_estimation"
+            android:icon="@drawable/percent"
+            android:title="@string/lesion_estimation" />
         <item
             android:id="@+id/settings"
             android:icon="@drawable/settings"

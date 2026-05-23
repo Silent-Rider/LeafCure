@@ -1,4 +1,4 @@
-package com.ai.leafcure.ui.diagnostics;
+package com.ai.leafcure.ui.common;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentResultBinding;
-import com.ai.leafcure.ui.TreatmentBottomSheetFragment;
+import com.ai.leafcure.ui.diagnostics.TreatmentBottomSheetFragment;
 import com.ai.leafcure.utils.ImageUtils;
 import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -37,6 +37,7 @@ public class ResultFragment extends Fragment {
     private String originalImageUriString;
     private String spotMaskUriString;
     private String leafMaskUriString;
+    private boolean isDiagnostics;
     @Inject
     ImageUtils imageUtils;
 
@@ -52,6 +53,8 @@ public class ResultFragment extends Fragment {
         ResultFragmentArgs args = ResultFragmentArgs.fromBundle(requireArguments());
         diseaseName = args.getDiseaseName();
         confidence = args.getConfidence();
+        isDiagnostics = diseaseName != null && confidence > 0;
+
         severity = args.getSeverity();
         originalImageUriString = args.getOriginalImageUriString();
         spotMaskUriString = args.getSpotMaskUriString();
@@ -62,10 +65,17 @@ public class ResultFragment extends Fragment {
     }
 
     private void setupUI() {
-        binding.diseaseName.setText(diseaseName);
-        @SuppressLint("DefaultLocale")
-        String confidence = String.format("Вероятность: %.1f%%", this.confidence * 100);
-        binding.confidence.setText(confidence);
+        if (isDiagnostics) {
+            binding.diseaseName.setText(diseaseName);
+            @SuppressLint("DefaultLocale")
+            String confidence = String.format("Вероятность: %.1f%%", this.confidence * 100);
+            binding.confidence.setText(confidence);
+        } else {
+            binding.diagnosis.setVisibility(View.GONE);
+            binding.diseaseName.setVisibility(View.GONE);
+            binding.confidence.setVisibility(View.GONE);
+            binding.treatmentRecommendations.setVisibility(View.GONE);
+        }
 
         int severityPercent = (int) (severity * 100);
         binding.progressSeverity.setProgress(severityPercent);
@@ -91,9 +101,9 @@ public class ResultFragment extends Fragment {
     private void setupClickListeners() {
         binding.showLesions.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.spotMask));
         binding.applyLeafMask.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.leafMask));
-        binding.treatment.setOnClickListener(v -> showTreatmentBottomSheet());
+        binding.treatmentRecommendations.setOnClickListener(isDiagnostics ? v -> showTreatmentBottomSheet() : null);
         binding.newDiagnostics.setOnClickListener(v -> {
-            Navigation.findNavController(v).popBackStack(R.id.home_page, false);
+            Navigation.findNavController(v).popBackStack(isDiagnostics? R.id.diagnostics : R.id.lesion_estimation, false);
         });
     }
 

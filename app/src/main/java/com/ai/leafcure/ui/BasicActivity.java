@@ -11,7 +11,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavGraph;
-import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -40,7 +39,8 @@ public class BasicActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.home_page,
+                R.id.diagnostics,
+                R.id.lesion_estimation,
                 R.id.settings)
                 .setOpenableLayout(drawer)
                 .build();
@@ -51,7 +51,7 @@ public class BasicActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         NavGraph navGraph = navController.getNavInflater().inflate(R.navigation.nav_graph);
-        navGraph.setStartDestination(R.id.home_page);
+        navGraph.setStartDestination(R.id.diagnostics);
         navController.setGraph(navGraph);
 
         MenuItem about = navigationView.getMenu().findItem(R.id.about);

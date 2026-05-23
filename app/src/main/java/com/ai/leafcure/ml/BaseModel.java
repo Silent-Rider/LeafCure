@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-public abstract class BaseModel {
+public abstract class BaseModel implements AutoCloseable{
 
     protected final Context context;
     protected final Interpreter interpreter;
@@ -48,6 +48,7 @@ public abstract class BaseModel {
         }
     }
 
+    @Override
     public void close() {
         if (interpreter != null) {
             interpreter.close();

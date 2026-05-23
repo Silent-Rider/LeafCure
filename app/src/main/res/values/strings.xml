@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LeafCure</string>
-    <string name="main_menu">Главное меню</string>
     <string name="open_drawer">Открыть меню</string>
     <string name="close_drawer">Закрыть меню</string>
     <string name="about_button">О программе</string>
     <string name="about_text">Программа была разработана Клименко Кириллом</string>
     <string name="ok">ОК</string>
 
-    <!-- HomePage -->
+    <!-- Diagnostics -->
     <string name="plants_diagnostics">Диагностика растений</string>
     <string name="choose_crop_for_diagnostics_start">Выберите культуру для начала диагностики</string>
     <string name="choose_plant">Выберите растение</string>
@@ -17,8 +16,13 @@
     <string name="gallery">Галерея</string>
     <string name="start">Начать</string>
 
+    <!-- LesionEstimation -->
+    <string name="lesion_estimation">Оценка степени поражения</string>
+    <string name="make_or_load_damaged_plant_photo">Сделайте или загрузите фото пораженного растения</string>
+
     <!-- Process -->
     <string name="diagnostics_in_process">Идет диагностика</string>
+    <string name="lesion_estimation_in_process">Идет оценка степени поражения</string>
 
     <!-- Result -->
     <string name="diagnostics_result">Результат диагностики</string>
@@ -28,7 +32,7 @@
     <string name="show_lesions">Показать очаги поражения</string>
     <string name="apply_leaf_mask">Наложить маску листа</string>
     <string name="treatment_recommendations">Рекомендации по лечению</string>
-    <string name="new_diagnostics">Идет диагностика</string>
+    <string name="new_diagnostics">Новая диагностика</string>
     <string name="close">Закрыть</string>
 
     <!-- Settings -->

@@ -1,4 +1,4 @@
-package com.ai.leafcure.ui;
+package com.ai.leafcure.ui.diagnostics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

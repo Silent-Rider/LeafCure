@@ -4,15 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/home_page">
+    app:startDestination="@id/diagnostics">
 
     <fragment
-        android:id="@+id/home_page"
-        android:name="com.ai.leafcure.ui.diagnostics.HomePageFragment"
-        android:label="@string/main_menu"
-        tools:layout="@layout/fragment_home">
+        android:id="@+id/diagnostics"
+        android:name="com.ai.leafcure.ui.diagnostics.DiagnosticsFragment"
+        android:label="@string/plants_diagnostics"
+        tools:layout="@layout/fragment_diagnostics">
         <action
-            android:id="@+id/action_home_page_to_process"
+            android:id="@+id/action_diagnostics_to_process"
+            app:destination="@id/process" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lesion_estimation"
+        android:name="com.ai.leafcure.ui.lesion.LesionEstimationFragment"
+        android:label="@string/lesion_estimation"
+        tools:layout="@layout/fragment_diagnostics">
+        <action
+            android:id="@+id/action_lesion_estimation_to_process"
             app:destination="@id/process" />
     </fragment>
 
@@ -25,31 +35,33 @@
 
     <fragment
         android:id="@+id/process"
-        android:name="com.ai.leafcure.ui.ProcessFragment"
+        android:name="com.ai.leafcure.ui.common.ProcessFragment"
         android:label="@string/plants_diagnostics"
         tools:layout="@layout/fragment_process">
         <action
             android:id="@+id/action_process_to_result"
             app:destination="@id/result" />
         <argument
-            android:name="selectedPlant"
-            app:argType="string" />
-        <argument
             android:name="imageUri"
             app:argType="string" />
+        <argument
+            android:name="selectedPlant"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
         android:id="@+id/result"
-        android:name="com.ai.leafcure.ui.diagnostics.ResultFragment"
+        android:name="com.ai.leafcure.ui.common.ResultFragment"
         android:label="@string/diagnostics_result"
         tools:layout="@layout/fragment_result">
         <argument
             android:name="diseaseName"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true"/>
         <argument
             android:name="confidence"
-            app:argType="float" />
+            app:argType="float"/>
         <argument
             android:name="severity"
             app:argType="float" />

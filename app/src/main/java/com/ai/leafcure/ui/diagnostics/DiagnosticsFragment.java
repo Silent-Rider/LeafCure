@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
-import com.ai.leafcure.databinding.FragmentHomeBinding;
+import com.ai.leafcure.databinding.FragmentDiagnosticsBinding;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
@@ -36,7 +36,7 @@ import java.util.Map;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomePageFragment extends Fragment {
+public class DiagnosticsFragment extends Fragment {
     private static final Map<String, String> langPlantNameMap = new HashMap<String, String> () {{
         put("Яблоко", "apple");
         put("Кукуруза", "corn");
@@ -45,21 +45,21 @@ public class HomePageFragment extends Fragment {
         put("Томат", "tomato");
     }};
 
-    private FragmentHomeBinding binding;
+    protected FragmentDiagnosticsBinding binding;
     private List<String> plantList;
 
     private String selectedPlant = null;
-    private Uri imageUri;
+    protected Uri imageUri;
 
-    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+    protected final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             this::handleCameraResult
     );
-    private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+    protected final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             this::handleGalleryResult
     );
-    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+    protected final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             this::handlePermissionResult
     );
@@ -72,7 +72,7 @@ public class HomePageFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentDiagnosticsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -81,11 +81,6 @@ public class HomePageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setupAutoCompleteTextView();
         setupClickListeners();
-
-        binding.start.setOnClickListener(v -> {
-            String selectedPlant = langPlantNameMap.get(this.selectedPlant);
-            Navigation.findNavController(v).navigate(HomePageFragmentDirections.actionHomePageToProcess(selectedPlant, imageUri.toString()));
-        });
     }
 
     private void setupAutoCompleteTextView() {
@@ -100,7 +95,7 @@ public class HomePageFragment extends Fragment {
         });
     }
 
-    private void setupClickListeners() {
+    protected void setupClickListeners() {
         binding.camera.setOnClickListener(v -> {
             if (getActivity() != null) {
                 permissionLauncher.launch(Manifest.permission.CAMERA);
@@ -108,6 +103,16 @@ public class HomePageFragment extends Fragment {
         });
         binding.gallery.setOnClickListener(v -> {
             galleryLauncher.launch("image/*");
+        });
+        setupStartClickListener();
+    }
+
+    protected void setupStartClickListener() {
+        binding.start.setOnClickListener(v -> {
+            String selectedPlant = langPlantNameMap.get(this.selectedPlant);
+            if (selectedPlant != null) {
+                Navigation.findNavController(v).navigate(DiagnosticsFragmentDirections.actionDiagnosticsToProcess(imageUri.toString(), selectedPlant));
+            }
         });
     }
 
@@ -146,7 +151,8 @@ public class HomePageFragment extends Fragment {
 
     private void handleCameraResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            Toast.makeText(getContext(), "Фото сделано: " + selectedPlant, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Фото сделано" + (selectedPlant != null ? ": " + selectedPlant : ""),
+                    Toast.LENGTH_SHORT).show();
             processImage(imageUri);
         } else {
             Toast.makeText(getContext(), "Съемка отменена", Toast.LENGTH_SHORT).show();
@@ -155,7 +161,8 @@ public class HomePageFragment extends Fragment {
 
     private void handleGalleryResult(Uri uri) {
         if (uri != null) {
-            Toast.makeText(getContext(), "Фото выбрано: " + selectedPlant, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Фото выбрано" + (selectedPlant != null ? ": " + selectedPlant : ""),
+                    Toast.LENGTH_SHORT).show();
             imageUri = uri;
             processImage(uri);
         } else {

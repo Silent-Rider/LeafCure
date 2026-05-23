@@ -23,6 +23,7 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/diagnosis"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/diagnosis"
@@ -183,7 +184,7 @@
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:id="@+id/treatment"
+            android:id="@+id/treatment_recommendations"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/treatment_recommendations"
