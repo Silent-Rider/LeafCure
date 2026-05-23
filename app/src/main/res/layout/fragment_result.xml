@@ -11,7 +11,7 @@
         android:backgroundTint="@color/web_green_gradient_start"
         android:id="@+id/card_diagnosis"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/horizontal_element_margin"
+        android:layout_marginTop="@dimen/item_margin"
         android:layout_width="match_parent"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
@@ -92,7 +92,8 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="24dp"
+        android:paddingHorizontal="@dimen/recycler_view_margin"
+        android:layout_marginTop="@dimen/horizontal_element_margin"
         android:layout_width="wrap_content"
         android:text="@string/image_analysis"
         android:textColor="@color/black"
@@ -113,26 +114,67 @@
             android:scaleType="fitCenter" />
 
         <ImageView
+            android:id="@+id/leaf_mask"
             android:alpha="0.0"
             android:contentDescription="@string/image_description"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <ImageView
             android:id="@+id/spot_mask"
+            android:alpha="0.0"
+            android:contentDescription="@string/image_description"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:scaleType="fitCenter"
             android:visibility="gone" />
     </FrameLayout>
 
-    <androidx.appcompat.widget.SwitchCompat
-        style="@style/switch_compat_style"
-        android:checked="false"
-        android:id="@+id/show_lesions"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/item_margin"
-        android:layout_width="wrap_content"
-        android:text="@string/show_lesions"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        app:switchPadding="16dp" />
+        android:orientation="horizontal"
+        android:gravity="start">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/show_lesions"
+            style="@style/switch_compat_style"
+            android:checked="false"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/item_margin"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:text="@string/show_lesions"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:switchPadding="16dp" />
+
+        <View
+            android:id="@+id/empty_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:visibility="gone"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/apply_leaf_mask"
+            style="@style/switch_compat_style"
+            android:checked="false"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/item_margin"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:text="@string/apply_leaf_mask"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:switchPadding="16dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -144,7 +186,7 @@
             android:id="@+id/treatment"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Рекомендации по лечению"
+            android:text="@string/treatment_recommendations"
             android:textColor="@color/dark_green"
             app:icon="@drawable/medkit"
             app:iconTint="@color/dark_green"
@@ -156,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:text="Новая диагностика" />
+            android:text="@string/new_diagnostics" />
     </LinearLayout>
 
 </LinearLayout>

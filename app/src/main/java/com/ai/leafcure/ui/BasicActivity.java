@@ -40,7 +40,8 @@ public class BasicActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.home_page)
+                R.id.home_page,
+                R.id.settings)
                 .setOpenableLayout(drawer)
                 .build();
 

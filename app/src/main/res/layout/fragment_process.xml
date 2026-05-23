@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:text="@string/diagnosis_in_process"
+            android:text="@string/diagnostics_in_process"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/forest_green" />

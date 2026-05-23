@@ -26,9 +26,14 @@
     <string name="severity_score">Степень поражения</string>
     <string name="image_analysis">Анализ изображения</string>
     <string name="show_lesions">Показать очаги поражения</string>
-    <string name="diagnosis_in_process">Идет диагностика</string>
+    <string name="apply_leaf_mask">Наложить маску листа</string>
     <string name="treatment_recommendations">Рекомендации по лечению</string>
+    <string name="new_diagnostics">Идет диагностика</string>
     <string name="close">Закрыть</string>
+
+    <!-- Settings -->
+    <string name="settings">Настройки</string>
+    <string name="enable_leaf_mask_application_function">Включить функцию наложения маски листа</string>
 
     <!-- Common -->
     <string name="apple">Яблоко</string>

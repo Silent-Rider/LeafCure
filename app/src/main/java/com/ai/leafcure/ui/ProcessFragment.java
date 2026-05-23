@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
@@ -32,6 +33,7 @@ public class ProcessFragment extends Fragment {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private FragmentProcessBinding binding;
+    private BasicActivityViewModel activityViewModel;
     private String selectedPlant;
     private Uri originalImageUri;
 
@@ -41,12 +43,8 @@ public class ProcessFragment extends Fragment {
     ImageUtils imageUtils;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        activityViewModel = new ViewModelProvider(requireActivity()).get(BasicActivityViewModel.class);
         binding = FragmentProcessBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -57,10 +55,11 @@ public class ProcessFragment extends Fragment {
         ProcessFragmentArgs args = ProcessFragmentArgs.fromBundle(requireArguments());
         selectedPlant = args.getSelectedPlant();
         originalImageUri = Uri.parse(args.getImageUri());
-        runDiagnosis();
+        runDiagnostics();
     }
 
-    private void runDiagnosis() {
+    private void runDiagnostics() {
+        boolean hasLeafMaskFunction = activityViewModel.hasLeafMaskFunction();
         executor.execute(() -> {
             try {
                 Bitmap originalBitmap = imageUtils.loadBitmapFromUri(originalImageUri);
@@ -73,6 +72,7 @@ public class ProcessFragment extends Fragment {
 
                 float[][] leafMask = leafSegmenter.segmentLeaf(resizedBitmap);
 
+
                 float healthScore = binaryClassifier.predictHealth(resizedBitmap);
                 boolean isDiseased = healthScore < 0.5f;
 
@@ -80,6 +80,12 @@ public class ProcessFragment extends Fragment {
                 float confidence;
                 float severity = 0.0f;
                 Uri spotMaskUri = null;
+                Uri leafMaskUri = null;
+
+                if (hasLeafMaskFunction) {
+                    Bitmap leafMaskBitmap = imageUtils.convertFloatMaskToBitmap(leafMask);
+                    leafMaskUri = imageUtils.saveBitmapToTempFile(leafMaskBitmap, originalBitmap);
+                }
 
                 if (isDiseased) {
                     float[] classProbabilities = categoricalClassifier.predictDiseaseType(resizedBitmap);
@@ -101,20 +107,8 @@ public class ProcessFragment extends Fragment {
                     confidence = 1.0f - healthScore;
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putString("diagnosis", diagnosisResult);
-                bundle.putFloat("confidence", confidence);
-                bundle.putFloat("severity", severity);
-                bundle.putString("original_image_uri", originalImageUri.toString());
-
-                String finalSpotMaskUri;
-                if (spotMaskUri != null) {
-                    finalSpotMaskUri = spotMaskUri.toString();
-                } else {
-                    finalSpotMaskUri = "";
-                }
-
-                bundle.putString("plant", selectedPlant);
+                String finalSpotMaskUri = spotMaskUri == null ? "" : spotMaskUri.toString();
+                String finalLeafMaskUri = leafMaskUri == null ? null : leafMaskUri.toString();
                 float finalSeverity = severity;
                 requireActivity().runOnUiThread(() -> {
                     NavOptions navOptions = new NavOptions.Builder()
@@ -126,7 +120,8 @@ public class ProcessFragment extends Fragment {
                                     confidence,
                                     finalSeverity,
                                     originalImageUri.toString(),
-                                    finalSpotMaskUri
+                                    finalSpotMaskUri,
+                                    finalLeafMaskUri
                                     ), navOptions);
                 });
 

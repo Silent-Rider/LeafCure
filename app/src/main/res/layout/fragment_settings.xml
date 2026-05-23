@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/item_margin">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/show_lesions"
+        style="@style/switch_compat_style"
+        android:checked="false"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/item_margin"
+        android:layout_width="wrap_content"
+        android:text="@string/enable_leaf_mask_application_function"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:paddingHorizontal="@dimen/item_margin"
+        app:switchPadding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/web_primary_text"/>
+
+</LinearLayout>

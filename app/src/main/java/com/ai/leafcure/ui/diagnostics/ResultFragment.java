@@ -1,6 +1,8 @@
-package com.ai.leafcure.ui;
+package com.ai.leafcure.ui.diagnostics;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +11,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
 import com.ai.leafcure.databinding.FragmentResultBinding;
+import com.ai.leafcure.ui.TreatmentBottomSheetFragment;
 import com.ai.leafcure.utils.ImageUtils;
 import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
-import java.io.InputStream;
 
-import android.graphics.BitmapFactory;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import javax.inject.Inject;
 
@@ -33,6 +36,7 @@ public class ResultFragment extends Fragment {
     private float severity;
     private String originalImageUriString;
     private String spotMaskUriString;
+    private String leafMaskUriString;
     @Inject
     ImageUtils imageUtils;
 
@@ -51,6 +55,7 @@ public class ResultFragment extends Fragment {
         severity = args.getSeverity();
         originalImageUriString = args.getOriginalImageUriString();
         spotMaskUriString = args.getSpotMaskUriString();
+        leafMaskUriString = args.getLeafMaskUriString();
 
         setupUI();
         setupClickListeners();
@@ -58,54 +63,35 @@ public class ResultFragment extends Fragment {
 
     private void setupUI() {
         binding.diseaseName.setText(diseaseName);
-        binding.confidence.setText(String.format("Вероятность: %.1f%%", confidence * 100));
+        @SuppressLint("DefaultLocale")
+        String confidence = String.format("Вероятность: %.1f%%", this.confidence * 100);
+        binding.confidence.setText(confidence);
 
         int severityPercent = (int) (severity * 100);
         binding.progressSeverity.setProgress(severityPercent);
-        binding.severityValue.setText(severityPercent + "%");
+        String severity = severityPercent + "%";
+        binding.severityValue.setText(severity);
 
         if (originalImageUriString != null && !originalImageUriString.isEmpty()) {
             Glide.with(this)
                     .load(Uri.parse(originalImageUriString))
                     .into(binding.imageOriginal);
         }
-
-        if (spotMaskUriString != null && !spotMaskUriString.isEmpty()) {
-            try {
-                Bitmap maskBitmap = loadBitmapFromUri(Uri.parse(spotMaskUriString));
-                if (maskBitmap != null) {
-                    Bitmap redMask = imageUtils.colorizeMask(maskBitmap);
-                    binding.spotMask.setImageBitmap(redMask);
-                    binding.showLesions.setEnabled(true);
-                } else {
-                    binding.showLesions.setEnabled(false);
-                    binding.showLesions.setText("Маска недоступна");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                binding.showLesions.setEnabled(false);
-                binding.showLesions.setText("Ошибка загрузки маски");
-            }
+        if (leafMaskUriString != null) {
+            binding.emptyView.setVisibility(View.GONE);
+            binding.applyLeafMask.setVisibility(View.VISIBLE);
         } else {
-            binding.showLesions.setEnabled(false);
-            binding.showLesions.setText("Маска недоступна");
+            binding.emptyView.setVisibility(View.VISIBLE);
+            binding.applyLeafMask.setVisibility(View.GONE);
         }
+        showMask(spotMaskUriString, Color.argb(180, 255, 0, 0), binding.spotMask, binding.showLesions);
+        showMask(leafMaskUriString, Color.BLACK, binding.leafMask, binding.applyLeafMask);
     }
 
     private void setupClickListeners() {
-        binding.showLesions.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                binding.spotMask.setVisibility(View.VISIBLE);
-                binding.spotMask.animate().alpha(0.7f).setDuration(300).start();
-            } else {
-                binding.spotMask.animate().alpha(0.0f).setDuration(300).withEndAction(() -> {
-                    binding.spotMask.setVisibility(View.GONE);
-                }).start();
-            }
-        });
-
+        binding.showLesions.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.spotMask));
+        binding.applyLeafMask.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.leafMask));
         binding.treatment.setOnClickListener(v -> showTreatmentBottomSheet());
-
         binding.newDiagnostics.setOnClickListener(v -> {
             Navigation.findNavController(v).popBackStack(R.id.home_page, false);
         });
@@ -116,13 +102,39 @@ public class ResultFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString("disease_name", diseaseName);
         bottomSheet.setArguments(args);
-
         bottomSheet.show(getChildFragmentManager(), "TreatmentBottomSheet");
     }
 
-    private Bitmap loadBitmapFromUri(Uri uri) throws Exception {
-        InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-        return BitmapFactory.decodeStream(inputStream);
+    private void showMask(String maskUriString, int color, ImageView maskView, SwitchCompat maskSwitch) {
+        if (maskUriString != null && !maskUriString.isEmpty()) {
+            try {
+                Bitmap maskBitmap = imageUtils.loadBitmapFromUri(Uri.parse(maskUriString));
+                if (maskBitmap != null) {
+                    Bitmap blackMask = imageUtils.colorizeMask(maskBitmap, color);
+                    maskView.setImageBitmap(blackMask);
+                    maskSwitch.setEnabled(true);
+                } else {
+                    maskSwitch.setEnabled(false);
+                    maskSwitch.setText("Маска недоступна");
+                }
+            } catch (Exception e) {
+                maskSwitch.setEnabled(false);
+                maskSwitch.setText("Ошибка загрузки маски");
+            }
+        }
+    }
+
+    private CompoundButton.OnCheckedChangeListener getOnCheckedChangeListener(ImageView maskView) {
+        return (buttonView, isChecked) -> {
+            if (isChecked) {
+                maskView.setVisibility(View.VISIBLE);
+                maskView.animate().alpha(0.7f).setDuration(300).start();
+            } else {
+                maskView.animate().alpha(0.0f).setDuration(300).withEndAction(() -> {
+                    maskView.setVisibility(View.GONE);
+                }).start();
+            }
+        };
     }
 
     @Override

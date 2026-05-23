@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -86,16 +88,17 @@ public class ImageUtils {
         return bitmap;
     }
 
-    public Uri saveBitmapToTempFile(Bitmap spotMaskBitmap, Bitmap originalImage) throws Exception {
+    public Uri saveBitmapToTempFile(Bitmap maskBitmap, Bitmap originalImage) throws Exception {
         Bitmap resizedMask = Bitmap.createScaledBitmap(
-                spotMaskBitmap,
+                maskBitmap,
                 originalImage.getWidth(),
                 originalImage.getHeight(),
                 true
         );
 
         File cacheDir = context.getCacheDir();
-        File tempFile = File.createTempFile("spot_mask_", ".png", cacheDir);
+        String tempFileName = String.format("mask_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyyHHmmssSSS")));
+        File tempFile = File.createTempFile(tempFileName, ".png", cacheDir);
 
         FileOutputStream fos = new FileOutputStream(tempFile);
         resizedMask.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -105,7 +108,7 @@ public class ImageUtils {
         return Uri.fromFile(tempFile);
     }
 
-    public Bitmap colorizeMask(Bitmap mask) {
+    public Bitmap colorizeMask(Bitmap mask, int color) {
         if (mask == null) return null;
 
         Bitmap coloredMask = mask.copy(Objects.requireNonNull(mask.getConfig()), true);
@@ -116,9 +119,9 @@ public class ImageUtils {
             for (int y = 0; y < height; y++) {
                 int pixel = coloredMask.getPixel(x, y);
                 if (Color.red(pixel) > 50 || Color.green(pixel) > 50 || Color.blue(pixel) > 50) {
-                    coloredMask.setPixel(x, y, Color.argb(180, 255, 0, 0));
+                    coloredMask.setPixel(x, y, color != Color.BLACK ? color : Color.TRANSPARENT);
                 } else {
-                    coloredMask.setPixel(x, y, Color.TRANSPARENT);
+                    coloredMask.setPixel(x, y, color != Color.BLACK ? Color.TRANSPARENT : color);
                 }
             }
         }

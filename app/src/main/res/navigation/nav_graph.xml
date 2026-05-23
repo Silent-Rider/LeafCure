@@ -8,12 +8,19 @@
 
     <fragment
         android:id="@+id/home_page"
-        android:name="com.ai.leafcure.ui.HomePageFragment"
+        android:name="com.ai.leafcure.ui.diagnostics.HomePageFragment"
         android:label="@string/main_menu"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_home_page_to_process"
             app:destination="@id/process" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.ai.leafcure.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings">
     </fragment>
 
     <fragment
@@ -34,7 +41,7 @@
 
     <fragment
         android:id="@+id/result"
-        android:name="com.ai.leafcure.ui.ResultFragment"
+        android:name="com.ai.leafcure.ui.diagnostics.ResultFragment"
         android:label="@string/diagnostics_result"
         tools:layout="@layout/fragment_result">
         <argument
@@ -52,6 +59,10 @@
         <argument
             android:name="spotMaskUriString"
             app:argType="string" />
+        <argument
+            android:name="leafMaskUriString"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
 </navigation>
