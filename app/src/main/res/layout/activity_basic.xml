@@ -22,7 +22,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/machine_time_light_1" />
+                android:background="@color/lighter_green" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -48,7 +48,7 @@
         app:itemIconPadding="@dimen/horizontal_margin"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
-        android:background="@color/web_green_gradient_start"
+        android:background="@color/cyan"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/activity_main_drawer" />
 

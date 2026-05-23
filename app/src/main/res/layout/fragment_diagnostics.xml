@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/web_disabled_background"
+    android:background="@color/almost_white"
     android:orientation="vertical">
 
     <TextView
@@ -24,7 +24,7 @@
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/web_green_gradient_start">
+        android:backgroundTint="@color/cyan">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginBottom="@dimen/vertical_margin"
-                app:boxBackgroundColor="@color/web_green_gradient_start"/>
+                app:boxBackgroundColor="@color/cyan"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/plant_input_layout"
@@ -50,7 +50,7 @@
                 app:hintTextColor="@color/dark_green"
                 app:boxStrokeColor="@color/dark_green"
                 app:endIconTint="@color/dark_green"
-                app:boxBackgroundColor="@color/web_green_gradient_start">
+                app:boxBackgroundColor="@color/cyan">
 
                 <AutoCompleteTextView
                     android:id="@+id/plant_auto_complete"

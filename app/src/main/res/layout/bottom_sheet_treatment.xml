@@ -20,7 +20,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:background="#E0E0E0"
+        android:background="@color/matte"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             tools:text="Здесь будет подробное описание методов лечения..."
             android:textSize="16sp"
-            android:textColor="#333333"
+            android:textColor="@color/grey"
             android:lineSpacingExtra="4dp"/>
     </ScrollView>
 

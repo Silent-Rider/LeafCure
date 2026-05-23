@@ -118,9 +118,8 @@ public class ResultFragment extends Fragment {
         binding.showLesions.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.spotMask));
         binding.applyLeafMask.setOnCheckedChangeListener(getOnCheckedChangeListener(binding.leafMask));
         binding.treatmentRecommendations.setOnClickListener(isDiagnostics ? v -> showTreatmentBottomSheet() : null);
-        binding.newDiagnostics.setOnClickListener(v -> {
-            Navigation.findNavController(v).popBackStack(isDiagnostics? R.id.diagnostics : R.id.lesion_estimation, false);
-        });
+        binding.newDiagnostics.setOnClickListener(v ->
+                Navigation.findNavController(v).popBackStack(isDiagnostics? R.id.diagnostics : R.id.lesion_estimation, false));
     }
 
     private void showTreatmentBottomSheet() {
@@ -157,9 +156,8 @@ public class ResultFragment extends Fragment {
                 maskView.setVisibility(View.VISIBLE);
                 maskView.animate().alpha(0.7f).setDuration(300).start();
             } else {
-                maskView.animate().alpha(0.0f).setDuration(300).withEndAction(() -> {
-                    maskView.setVisibility(View.GONE);
-                }).start();
+                maskView.animate().alpha(0.0f).setDuration(300).withEndAction(() ->
+                        maskView.setVisibility(View.GONE)).start();
             }
         };
     }
