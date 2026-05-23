@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
+import com.ai.leafcure.data.LeafCureDatabase;
+import com.ai.leafcure.data.entity.Disease;
 import com.ai.leafcure.databinding.FragmentResultBinding;
 import com.ai.leafcure.ui.diagnostics.TreatmentBottomSheetFragment;
 import com.ai.leafcure.utils.ImageUtils;
@@ -24,6 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -38,6 +42,9 @@ public class ResultFragment extends Fragment {
     private String spotMaskUriString;
     private String leafMaskUriString;
     private boolean isDiagnostics;
+
+    @Inject
+    LeafCureDatabase leafCureDatabase;
     @Inject
     ImageUtils imageUtils;
 
@@ -51,9 +58,21 @@ public class ResultFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ResultFragmentArgs args = ResultFragmentArgs.fromBundle(requireArguments());
-        diseaseName = args.getDiseaseName();
-        confidence = args.getConfidence();
-        isDiagnostics = diseaseName != null && confidence > 0;
+        String diseaseName = args.getDiseaseName();
+        if (diseaseName != null) {
+            if (Objects.equals(diseaseName, "Healthy")) {
+                this.diseaseName = "Здоров";
+                binding.showLesions.setVisibility(View.GONE);
+                binding.treatmentRecommendations.setVisibility(View.GONE);
+            } else {
+                Disease disease = leafCureDatabase.diseaseDao().getByFullEnglishName(diseaseName);
+                if (disease != null) {
+                    this.diseaseName = disease.getRussianName();
+                }
+            }
+        }
+        this.confidence = args.getConfidence();
+        isDiagnostics = this.diseaseName != null && this.confidence > 0;
 
         severity = args.getSeverity();
         originalImageUriString = args.getOriginalImageUriString();
@@ -111,6 +130,8 @@ public class ResultFragment extends Fragment {
         TreatmentBottomSheetFragment bottomSheet = new TreatmentBottomSheetFragment();
         Bundle args = new Bundle();
         args.putString("disease_name", diseaseName);
+        Disease disease = leafCureDatabase.diseaseDao().getByRussianName(diseaseName);
+        args.putString("treatment", leafCureDatabase.treatmentDao().getContentByDiseaseId(disease.getId()));
         bottomSheet.setArguments(args);
         bottomSheet.show(getChildFragmentManager(), "TreatmentBottomSheet");
     }

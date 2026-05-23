@@ -15,7 +15,7 @@ public class SpotSegmenter extends BaseModel {
         super(context, imageUtils, "segment/spot_seg.tflite");
     }
 
-    public float[][] segmentSpots(Bitmap bitmap) {
+    public float[][] segmentSpots(Bitmap bitmap, float[][] leafMask) {
         if (bitmap.getWidth() != inputSize || bitmap.getHeight() != inputSize) {
             throw new IllegalArgumentException("Bitmap size mismatch.");
         }
@@ -32,7 +32,7 @@ public class SpotSegmenter extends BaseModel {
         float[][] mask = new float[inputSize][inputSize];
         for (int y = 0; y < inputSize; y++) {
             for (int x = 0; x < inputSize; x++) {
-                mask[y][x] = outputArray[0][y][x][0];
+                mask[y][x] = outputArray[0][y][x][0] * leafMask[y][x];
             }
         }
         return mask;

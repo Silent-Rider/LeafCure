@@ -1,2 +1,0 @@
-0: Tomato___diseases
-1: Tomato___healthy

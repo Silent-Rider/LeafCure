@@ -1,2 +1,0 @@
-0: Potato___diseases
-1: Potato___healthy

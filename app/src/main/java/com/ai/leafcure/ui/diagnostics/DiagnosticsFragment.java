@@ -23,33 +23,33 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.ai.leafcure.R;
+import com.ai.leafcure.data.LeafCureDatabase;
+import com.ai.leafcure.data.entity.Plant;
 import com.ai.leafcure.databinding.FragmentDiagnosticsBinding;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class DiagnosticsFragment extends Fragment {
-    private static final Map<String, String> langPlantNameMap = new HashMap<String, String> () {{
-        put("Яблоко", "apple");
-        put("Кукуруза", "corn");
-        put("Виноград", "grape");
-        put("Картофель", "potato");
-        put("Томат", "tomato");
-    }};
 
     protected FragmentDiagnosticsBinding binding;
-    private List<String> plantList;
-
+    private Map<String, Plant> plantMap;
     private String selectedPlant = null;
     protected Uri imageUri;
+    @Inject
+    LeafCureDatabase leafCureDatabase;
 
     protected final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -67,7 +67,11 @@ public class DiagnosticsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        plantList = Arrays.asList(getResources().getStringArray(R.array.plants));
+        List<Plant> plantList = leafCureDatabase.plantDao().getAll();
+        System.out.println("SR plantList");
+        plantList.forEach(System.out::println);
+        plantMap = new HashMap<>();
+        plantList.forEach(plant -> plantMap.put(plant.getRussianName(), plant));
     }
 
     @Override
@@ -84,7 +88,7 @@ public class DiagnosticsFragment extends Fragment {
     }
 
     private void setupAutoCompleteTextView() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.item_dropdown, plantList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.item_dropdown, new ArrayList<>(plantMap.keySet()));
         binding.plantAutoComplete.setAdapter(adapter);
         binding.plantAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             selectedPlant = parent.getItemAtPosition(position).toString();
@@ -109,9 +113,10 @@ public class DiagnosticsFragment extends Fragment {
 
     protected void setupStartClickListener() {
         binding.start.setOnClickListener(v -> {
-            String selectedPlant = langPlantNameMap.get(this.selectedPlant);
-            if (selectedPlant != null) {
-                Navigation.findNavController(v).navigate(DiagnosticsFragmentDirections.actionDiagnosticsToProcess(imageUri.toString(), selectedPlant));
+            Plant plant;
+            if (selectedPlant != null && (plant = plantMap.get(selectedPlant)) != null) {
+                Navigation.findNavController(v).navigate(DiagnosticsFragmentDirections
+                        .actionDiagnosticsToProcess(imageUri.toString(), plant.getEnglishName()));
             }
         });
     }

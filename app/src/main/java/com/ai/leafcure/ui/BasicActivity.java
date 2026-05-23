@@ -1,6 +1,8 @@
 package com.ai.leafcure.ui;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.MenuItem;
 
 import androidx.activity.OnBackPressedCallback;
@@ -16,10 +18,18 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.ai.leafcure.R;
+import com.ai.leafcure.data.LeafCureDatabase;
+import com.ai.leafcure.data.entity.Disease;
+import com.ai.leafcure.data.entity.Plant;
 import com.ai.leafcure.databinding.ActivityBasicBinding;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -27,6 +37,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class BasicActivity extends AppCompatActivity {
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
+    @Inject
+    LeafCureDatabase leafCureDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +67,15 @@ public class BasicActivity extends AppCompatActivity {
         navController.setGraph(navGraph);
 
         MenuItem about = navigationView.getMenu().findItem(R.id.about);
+        List<Plant> plantList = leafCureDatabase.plantDao().getAll();
+        Map<Integer, List<Disease>> diseaseMap = leafCureDatabase.diseaseDao().getAll().stream()
+                        .collect(Collectors.groupingBy(Disease::getPlantId));
+        Spanned aboutText = buildAboutText(plantList, diseaseMap, getString(R.string.about_text));
+
         about.setOnMenuItemClickListener(item -> {
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.about_button))
-                    .setMessage(getString(R.string.about_text))
+                    .setMessage(aboutText)
                     .setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss())
                     .create()
                     .show();
@@ -89,5 +106,37 @@ public class BasicActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+    }
+
+    private static Spanned buildAboutText(List<Plant> plantList,
+                                          Map<Integer, List<Disease>> diseaseMap,
+                                          String authorInfo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b><font color='#333333'>Поддерживаемые культуры и болезни:</font></b><br><br>");
+        for (Plant plant : plantList) {
+            sb.append("<font color='#2E7D32'><b>")
+                    .append(plant.getRussianName())
+                    .append("</b></font><br>");
+
+            List<Disease> diseases = diseaseMap.getOrDefault(plant.getId(), null);
+
+            if (diseases != null && !diseases.isEmpty()) {
+                for (Disease disease : diseases) {
+                    sb.append("&nbsp;&nbsp;&nbsp;&bull; ")
+                            .append(disease.getRussianName())
+                            .append("<br>");
+                }
+            } else {
+                sb.append("&nbsp;&nbsp;&nbsp;<i>Нет данных о болезнях</i><br>");
+            }
+            sb.append("<br>");
+        }
+        sb.append("<hr><br>");
+        sb.append("<font color='#666666'>")
+                .append(authorInfo)
+                .append("<br><br>")
+                .append("© 2026 LeafCure. Все права защищены.")
+                .append("</font>");
+        return Html.fromHtml(sb.toString(), Html.FROM_HTML_MODE_LEGACY);
     }
 }

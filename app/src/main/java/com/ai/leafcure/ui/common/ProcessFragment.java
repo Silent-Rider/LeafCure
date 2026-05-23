@@ -100,7 +100,7 @@ public class ProcessFragment extends Fragment {
                     String diseaseName = categoricalClassifier.getClassName(predictedClassIndex);
 
                     Bitmap maskedForSpots = imageUtils.applyMaskToBitmap(resizedBitmap, leafMask);
-                    float[][] spotMask = spotSegmenter.segmentSpots(maskedForSpots);
+                    float[][] spotMask = spotSegmenter.segmentSpots(maskedForSpots, leafMask);
 
                     severity = mathUtils.calculateSeverity(leafMask, spotMask);
 
@@ -154,7 +154,7 @@ public class ProcessFragment extends Fragment {
                 }
 
                 Bitmap maskedForSpots = imageUtils.applyMaskToBitmap(resizedBitmap, leafMask);
-                float[][] spotMask = spotSegmenter.segmentSpots(maskedForSpots);
+                float[][] spotMask = spotSegmenter.segmentSpots(maskedForSpots, leafMask);
 
                 float severity = mathUtils.calculateSeverity(leafMask, spotMask);
 

@@ -38,22 +38,10 @@
     <!-- Settings -->
     <string name="settings">Настройки</string>
     <string name="enable_leaf_mask_application_function">Включить функцию наложения маски листа</string>
+    <string name="switch_disease_names_to_english">Переключить названия болезней на английский</string>
 
     <!-- Common -->
-    <string name="apple">Яблоко</string>
-    <string name="corn">Кукуруза</string>
-    <string name="grape">Виноград</string>
-    <string name="potato">Картофель</string>
-    <string name="tomato">Томат</string>
-
-    <string-array name="plants">
-        <item>@string/apple</item>
-        <item>@string/corn</item>
-        <item>@string/grape</item>
-        <item>@string/potato</item>
-        <item>@string/tomato</item>
-    </string-array>
-
     <string name="image_description">Изображение</string>
+    <string name="database_name">leaf_cure_database</string>
 
 </resources>
