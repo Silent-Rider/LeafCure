@@ -117,6 +117,9 @@ public class ProcessFragment extends Fragment {
                 bundle.putString("plant", selectedPlant);
                 float finalSeverity = severity;
                 requireActivity().runOnUiThread(() -> {
+                    NavOptions navOptions = new NavOptions.Builder()
+                            .setPopUpTo(R.id.process, true)
+                            .build();
                     Navigation.findNavController(binding.getRoot())
                             .navigate(ProcessFragmentDirections.actionProcessToResult(
                                     diagnosisResult,
@@ -124,7 +127,7 @@ public class ProcessFragment extends Fragment {
                                     finalSeverity,
                                     originalImageUri.toString(),
                                     finalSpotMaskUri
-                                    ));
+                                    ), navOptions);
                 });
 
                 leafSegmenter.close();

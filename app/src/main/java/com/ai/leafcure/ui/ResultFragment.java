@@ -28,7 +28,6 @@ import javax.inject.Inject;
 public class ResultFragment extends Fragment {
 
     private FragmentResultBinding binding;
-
     private String diseaseName;
     private float confidence;
     private float severity;
@@ -77,24 +76,24 @@ public class ResultFragment extends Fragment {
                 if (maskBitmap != null) {
                     Bitmap redMask = imageUtils.colorizeMask(maskBitmap);
                     binding.spotMask.setImageBitmap(redMask);
-                    binding.isRequiredOrders.setEnabled(true);
+                    binding.showLesions.setEnabled(true);
                 } else {
-                    binding.isRequiredOrders.setEnabled(false);
-                    binding.isRequiredOrders.setText("Маска недоступна");
+                    binding.showLesions.setEnabled(false);
+                    binding.showLesions.setText("Маска недоступна");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                binding.isRequiredOrders.setEnabled(false);
-                binding.isRequiredOrders.setText("Ошибка загрузки маски");
+                binding.showLesions.setEnabled(false);
+                binding.showLesions.setText("Ошибка загрузки маски");
             }
         } else {
-            binding.isRequiredOrders.setEnabled(false);
-            binding.isRequiredOrders.setText("Маска недоступна");
+            binding.showLesions.setEnabled(false);
+            binding.showLesions.setText("Маска недоступна");
         }
     }
 
     private void setupClickListeners() {
-        binding.isRequiredOrders.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.showLesions.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 binding.spotMask.setVisibility(View.VISIBLE);
                 binding.spotMask.animate().alpha(0.7f).setDuration(300).start();
@@ -107,7 +106,7 @@ public class ResultFragment extends Fragment {
 
         binding.treatment.setOnClickListener(v -> showTreatmentBottomSheet());
 
-        binding.newDiagnosis.setOnClickListener(v -> {
+        binding.newDiagnostics.setOnClickListener(v -> {
             Navigation.findNavController(v).popBackStack(R.id.home_page, false);
         });
     }
