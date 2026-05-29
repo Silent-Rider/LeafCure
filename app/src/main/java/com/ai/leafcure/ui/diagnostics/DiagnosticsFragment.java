@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -105,9 +103,7 @@ public class DiagnosticsFragment extends Fragment {
                 permissionLauncher.launch(Manifest.permission.CAMERA);
             }
         });
-        binding.gallery.setOnClickListener(v -> {
-            galleryLauncher.launch("image/*");
-        });
+        binding.gallery.setOnClickListener(v -> galleryLauncher.launch("image/*"));
         setupStartClickListener();
     }
 
