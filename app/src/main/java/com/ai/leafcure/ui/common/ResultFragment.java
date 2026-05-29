@@ -69,7 +69,7 @@ public class ResultFragment extends Fragment {
             }
         }
         confidence = args.getConfidence();
-        isDiagnostics = disease != null && confidence > 0;
+        isDiagnostics = disease != null && confidence >= 0.0f;
 
         severity = args.getSeverity();
         originalImageUriString = args.getOriginalImageUriString();
