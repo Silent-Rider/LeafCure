@@ -33,7 +33,6 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public class ProcessFragment extends Fragment {
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private FragmentProcessBinding binding;
     private BasicActivityViewModel activityViewModel;
     private String selectedPlant;
@@ -56,9 +55,16 @@ public class ProcessFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (activityViewModel.isProcessing()) {
+            return;
+        }
+
         ProcessFragmentArgs args = ProcessFragmentArgs.fromBundle(requireArguments());
         selectedPlant = args.getSelectedPlant();
         originalImageUri = Uri.parse(args.getImageUri());
+
+        activityViewModel.setProcessing(true);
+
         if (selectedPlant != null) {
             binding.processText.setText(R.string.diagnostics_in_process);
             runDiagnostics();
@@ -70,7 +76,7 @@ public class ProcessFragment extends Fragment {
 
     private void runDiagnostics() {
         boolean hasLeafMaskFunction = activityViewModel.hasLeafMaskFunction();
-        executor.execute(() -> {
+        activityViewModel.getExecutor().execute(() -> {
             try (LeafSegmenter leafSegmenter = modelFactory.createLeafSegmenter();
                  BinaryClassifier binaryClassifier = modelFactory.createBinaryClassifier(selectedPlant);
                  CategoricalClassifier categoricalClassifier = modelFactory.createCategoricalClassifier(selectedPlant);
@@ -116,6 +122,9 @@ public class ProcessFragment extends Fragment {
                 String finalSpotMaskUri = spotMaskUri == null ? "" : spotMaskUri.toString();
                 String finalLeafMaskUri = leafMaskUri == null ? null : leafMaskUri.toString();
                 float finalSeverity = severity;
+
+                activityViewModel.setProcessing(false);
+
                 requireActivity().runOnUiThread(() -> {
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.process, true)
@@ -131,6 +140,7 @@ public class ProcessFragment extends Fragment {
                                     ), navOptions);
                 });
             } catch (Exception e) {
+                activityViewModel.setProcessing(false);
                 String errorText = "Ошибка диагностики: " + e.getMessage();
                 requireActivity().runOnUiThread(() -> binding.processText.setText(errorText));
             }
@@ -139,7 +149,7 @@ public class ProcessFragment extends Fragment {
 
     private void runLesionEstimation() {
         boolean hasLeafMaskFunction = activityViewModel.hasLeafMaskFunction();
-        executor.execute(() -> {
+        activityViewModel.getExecutor().execute(() -> {
             try (LeafSegmenter leafSegmenter = modelFactory.createLeafSegmenter();
                  SpotSegmenter spotSegmenter = modelFactory.createSpotSegmenter()) {
 
@@ -163,6 +173,9 @@ public class ProcessFragment extends Fragment {
 
                 String finalSpotMaskUri = spotMaskUri == null ? "" : spotMaskUri.toString();
                 String finalLeafMaskUri = leafMaskUri == null ? null : leafMaskUri.toString();
+
+                activityViewModel.setProcessing(false);
+
                 requireActivity().runOnUiThread(() -> {
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.process, true)
@@ -178,6 +191,7 @@ public class ProcessFragment extends Fragment {
                             ), navOptions);
                 });
             } catch (Exception e) {
+                activityViewModel.setProcessing(false);
                 String errorText = "Ошибка диагностики: " + e.getMessage();
                 requireActivity().runOnUiThread(() -> binding.processText.setText(errorText));
             }
@@ -187,7 +201,6 @@ public class ProcessFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        executor.shutdownNow();
         binding = null;
     }
 }
