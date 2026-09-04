@@ -14,7 +14,7 @@ import com.ai.leafcure.data.entity.Treatment;
         Plant.class,
         Disease.class,
         Treatment.class
-}, version = 1)
+}, version = 2)
 public abstract class LeafCureDatabase extends RoomDatabase {
 
     public abstract PlantDao plantDao();
