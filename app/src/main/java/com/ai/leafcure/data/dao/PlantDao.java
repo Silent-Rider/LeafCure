@@ -9,6 +9,6 @@ import java.util.List;
 @Dao
 public interface PlantDao {
 
-    @Query("SELECT * FROM Plant")
+    @Query("SELECT * FROM Plant ORDER BY russianName")
     List<Plant> getAll();
 }

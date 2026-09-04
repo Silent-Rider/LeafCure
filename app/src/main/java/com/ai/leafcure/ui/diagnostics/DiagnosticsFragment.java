@@ -66,8 +66,6 @@ public class DiagnosticsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         List<Plant> plantList = leafCureDatabase.plantDao().getAll();
-        System.out.println("SR plantList");
-        plantList.forEach(System.out::println);
         plantMap = new HashMap<>();
         plantList.forEach(plant -> plantMap.put(plant.getRussianName(), plant));
     }
