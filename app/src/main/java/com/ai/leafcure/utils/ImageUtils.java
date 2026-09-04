@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -34,6 +35,61 @@ public class ImageUtils {
     public Bitmap loadBitmapFromUri(Uri uri) throws Exception {
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
         return BitmapFactory.decodeStream(inputStream);
+    }
+
+    public Bitmap loadResizedBitmapFromUri(Uri uri, int targetSize) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null) return null;
+
+            BitmapFactory.decodeStream(inputStream, null, options);
+            inputStream.close();
+
+            int srcWidth = options.outWidth;
+            int srcHeight = options.outHeight;
+            int sampleSize = 1;
+
+            while ((srcWidth / sampleSize > targetSize) ||
+                    (srcHeight / sampleSize > targetSize)) {
+                sampleSize *= 2;
+            }
+
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = sampleSize;
+
+            inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null) return null;
+
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            inputStream.close();
+
+            if (bitmap != null && (bitmap.getWidth() != targetSize || bitmap.getHeight() != targetSize)) {
+                Bitmap resized = Bitmap.createScaledBitmap(bitmap, targetSize, targetSize, true);
+                if (resized != bitmap) {
+                    bitmap.recycle();
+                }
+                return resized;
+            }
+
+            return bitmap;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public int[] getImageDimensions(Uri uri) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        try (InputStream is = context.getContentResolver().openInputStream(uri)) {
+            BitmapFactory.decodeStream(is, null, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return new int[]{options.outWidth, options.outHeight};
     }
     
     public ByteBuffer bitmapToFloatBuffer(Bitmap bitmap) {
@@ -88,11 +144,11 @@ public class ImageUtils {
         return bitmap;
     }
 
-    public Uri saveBitmapToTempFile(Bitmap maskBitmap, Bitmap originalImage) throws Exception {
+    public Uri saveBitmapToTempFile(Bitmap maskBitmap, int originalImageWidth, int originalImageHeight) throws Exception {
         Bitmap resizedMask = Bitmap.createScaledBitmap(
                 maskBitmap,
-                originalImage.getWidth(),
-                originalImage.getHeight(),
+                originalImageWidth,
+                originalImageHeight,
                 true
         );
 

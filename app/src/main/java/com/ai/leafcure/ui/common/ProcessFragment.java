@@ -25,9 +25,6 @@ import com.ai.leafcure.utils.ModelFactory;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.inject.Inject;
 
 @AndroidEntryPoint
@@ -82,8 +79,9 @@ public class ProcessFragment extends Fragment {
                  CategoricalClassifier categoricalClassifier = modelFactory.createCategoricalClassifier(selectedPlant);
                  SpotSegmenter spotSegmenter = modelFactory.createSpotSegmenter()) {
 
-                Bitmap originalBitmap = imageUtils.loadBitmapFromUri(originalImageUri);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE, true);
+                Bitmap resizedBitmap = imageUtils.loadResizedBitmapFromUri(originalImageUri, MODEL_INPUT_SIZE);
+                int[] dims = imageUtils.getImageDimensions(originalImageUri);
+
                 float[][] leafMask = leafSegmenter.segmentLeaf(resizedBitmap);
                 float healthScore = binaryClassifier.predictHealth(resizedBitmap);
                 boolean isDiseased = healthScore < 0.5f;
@@ -96,7 +94,7 @@ public class ProcessFragment extends Fragment {
 
                 if (hasLeafMaskFunction) {
                     Bitmap leafMaskBitmap = imageUtils.convertFloatMaskToBitmap(leafMask);
-                    leafMaskUri = imageUtils.saveBitmapToTempFile(leafMaskBitmap, originalBitmap);
+                    leafMaskUri = imageUtils.saveBitmapToTempFile(leafMaskBitmap, dims[0], dims[1]);
                 }
 
                 if (isDiseased) {
@@ -111,7 +109,7 @@ public class ProcessFragment extends Fragment {
                     severity = mathUtils.calculateSeverity(leafMask, spotMask);
 
                     Bitmap spotMaskBitmap = imageUtils.convertFloatMaskToBitmap(spotMask);
-                    spotMaskUri = imageUtils.saveBitmapToTempFile(spotMaskBitmap, originalBitmap);
+                    spotMaskUri = imageUtils.saveBitmapToTempFile(spotMaskBitmap, dims[0], dims[1]);
 
                     diagnosisResult = diseaseName;
                 } else {
@@ -142,7 +140,11 @@ public class ProcessFragment extends Fragment {
             } catch (Exception e) {
                 activityViewModel.setProcessing(false);
                 String errorText = "Ошибка диагностики: " + e.getMessage();
-                requireActivity().runOnUiThread(() -> binding.processText.setText(errorText));
+                requireActivity().runOnUiThread(() -> {
+                    if (binding != null) {
+                        binding.processText.setText(errorText);
+                    }
+                });
             }
         });
     }
@@ -153,14 +155,15 @@ public class ProcessFragment extends Fragment {
             try (LeafSegmenter leafSegmenter = modelFactory.createLeafSegmenter();
                  SpotSegmenter spotSegmenter = modelFactory.createSpotSegmenter()) {
 
-                Bitmap originalBitmap = imageUtils.loadBitmapFromUri(originalImageUri);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE, true);
+                Bitmap resizedBitmap = imageUtils.loadResizedBitmapFromUri(originalImageUri, MODEL_INPUT_SIZE);
+                int[] dims = imageUtils.getImageDimensions(originalImageUri);
+
                 float[][] leafMask = leafSegmenter.segmentLeaf(resizedBitmap);
                 Uri leafMaskUri = null;
 
                 if (hasLeafMaskFunction) {
                     Bitmap leafMaskBitmap = imageUtils.convertFloatMaskToBitmap(leafMask);
-                    leafMaskUri = imageUtils.saveBitmapToTempFile(leafMaskBitmap, originalBitmap);
+                    leafMaskUri = imageUtils.saveBitmapToTempFile(leafMaskBitmap, dims[0], dims[1]);
                 }
 
                 Bitmap maskedForSpots = imageUtils.applyMaskToBitmap(resizedBitmap, leafMask);
@@ -169,7 +172,7 @@ public class ProcessFragment extends Fragment {
                 float severity = mathUtils.calculateSeverity(leafMask, spotMask);
 
                 Bitmap spotMaskBitmap = imageUtils.convertFloatMaskToBitmap(spotMask);
-                Uri spotMaskUri = imageUtils.saveBitmapToTempFile(spotMaskBitmap, originalBitmap);
+                Uri spotMaskUri = imageUtils.saveBitmapToTempFile(spotMaskBitmap, dims[0], dims[1]);
 
                 String finalSpotMaskUri = spotMaskUri == null ? "" : spotMaskUri.toString();
                 String finalLeafMaskUri = leafMaskUri == null ? null : leafMaskUri.toString();
@@ -193,7 +196,11 @@ public class ProcessFragment extends Fragment {
             } catch (Exception e) {
                 activityViewModel.setProcessing(false);
                 String errorText = "Ошибка диагностики: " + e.getMessage();
-                requireActivity().runOnUiThread(() -> binding.processText.setText(errorText));
+                requireActivity().runOnUiThread(() -> {
+                    if (binding != null) {
+                        binding.processText.setText(errorText);
+                    }
+                });
             }
         });
     }
