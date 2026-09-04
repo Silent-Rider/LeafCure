@@ -31,9 +31,9 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -66,7 +66,7 @@ public class DiagnosticsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         List<Plant> plantList = leafCureDatabase.plantDao().getAll();
-        plantMap = new HashMap<>();
+        plantMap = new TreeMap<>();
         plantList.forEach(plant -> plantMap.put(plant.getRussianName(), plant));
     }
 
