@@ -16,3 +16,4 @@ local.properties
 /leafcure
 /app/release/
 /.idea/
+/keystore/
