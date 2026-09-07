@@ -79,33 +79,30 @@ public class DiagnosticsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupAutoCompleteTextView();
-        setupClickListeners();
-    }
-
-    private void setupAutoCompleteTextView() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.item_dropdown, new ArrayList<>(plantMap.keySet()));
         binding.plantAutoComplete.setAdapter(adapter);
-        binding.plantAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            selectedPlant = parent.getItemAtPosition(position).toString();
-            binding.layoutActions.setVisibility(View.VISIBLE);
-            imageUri = null;
-            binding.image.setVisibility(View.GONE);
-            binding.start.setVisibility(View.GONE);
-        });
+        setupClickListeners();
+
+        if (selectedPlant != null) {
+            binding.plantAutoComplete.setText(selectedPlant, false);
+            onPlantSelected(selectedPlant);
+        }
     }
 
     protected void setupClickListeners() {
+        binding.plantAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedPlant = parent.getItemAtPosition(position).toString();
+            onPlantSelected(selectedPlant);
+        });
+
         binding.camera.setOnClickListener(v -> {
             if (getActivity() != null) {
                 permissionLauncher.launch(Manifest.permission.CAMERA);
             }
         });
-        binding.gallery.setOnClickListener(v -> galleryLauncher.launch("image/*"));
-        setupStartClickListener();
-    }
 
-    protected void setupStartClickListener() {
+        binding.gallery.setOnClickListener(v -> galleryLauncher.launch("image/*"));
+
         binding.start.setOnClickListener(v -> {
             Plant plant;
             if (selectedPlant != null && (plant = plantMap.get(selectedPlant)) != null) {
@@ -113,6 +110,14 @@ public class DiagnosticsFragment extends Fragment {
                         .actionDiagnosticsToProcess(imageUri.toString(), plant.getEnglishName()));
             }
         });
+    }
+
+    private void onPlantSelected(String plantName) {
+        selectedPlant = plantName;
+        binding.layoutActions.setVisibility(View.VISIBLE);
+        imageUri = null;
+        binding.image.setVisibility(View.GONE);
+        binding.start.setVisibility(View.GONE);
     }
 
     @SuppressLint("QueryPermissionsNeeded")
