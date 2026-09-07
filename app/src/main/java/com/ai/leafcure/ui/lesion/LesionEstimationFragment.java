@@ -24,13 +24,8 @@ public class LesionEstimationFragment extends DiagnosticsFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         binding.choose.setText(R.string.make_or_load_damaged_plant_photo);
         binding.cardPlantSelection.setVisibility(View.GONE);
-        setupClickListeners();
-        binding.layoutActions.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void setupStartClickListener() {
         binding.start.setOnClickListener(v -> Navigation.findNavController(v)
                 .navigate(LesionEstimationFragmentDirections.actionLesionEstimationToProcess(imageUri.toString(), null)));
+        binding.layoutActions.setVisibility(View.VISIBLE);
     }
 }
